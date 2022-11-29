@@ -8,4 +8,4 @@ const Events = () => {
   )
 }
 
-export default Eventsya
+export default Events
