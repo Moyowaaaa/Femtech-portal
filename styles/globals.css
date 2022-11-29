@@ -32,3 +32,8 @@ a {
     background: black;
   } */
 }
+
+.shadow {
+  border: 1px solid rgba(10, 20, 255, 0.3);
+box-shadow: 0px 4px 20px rgba(10, 20, 255, 0.3);
+}

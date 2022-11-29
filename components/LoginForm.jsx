@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 const LoginForm = () => {
@@ -18,7 +19,10 @@ const LoginForm = () => {
         className="w-full p-2 outline-none border-2 border-[#3041DC] rounded-md"
         />
 
+        <Link href='/studentDashboard'>
         <button className='bg-[#187DF3] text-white py-2 px-9 flex items-center w-max rounded-md shadow-md'>Login</button>
+        </Link>
+        
       </div>
       
 
