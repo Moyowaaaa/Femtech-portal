@@ -22,7 +22,10 @@ a {
 .right{
   background: rgba(46, 5, 213, 0.7);
 }
+.event-options {
+  background: rgba(54, 144, 251, 0.25);
 
+}
 @media (prefers-color-scheme: dark) {
   /* html {
     color-scheme: dark;
