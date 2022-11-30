@@ -1,12 +1,42 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import React from 'react';
+
 import LoginForm from '../components/LoginForm'
+import { useAuthContext } from '../store/contexts'
 import styles from '../styles/Home.module.css'
 import Logo from '../images/logo.svg'
 import leftMan from '../images/left_man.svg'
 import rightMan from '../images/right_man.svg'
 
 function Home() {
+  const [form, setForm] = React.useState();
+  const [errors, setErrors] = React.useState();
+  const [loading, setLoading] = React.useState(false);
+
+  const { login } = useAuthContext()
+
+  const handleChange = React.useCallback(
+    ({ target: { name, value }}) => {
+        setForm(prevState => ({
+          ...prevState,
+          [name]: value
+        }))
+        setErrors(prevState => ({
+          ...prevState,
+          [name]: undefined
+        }))
+  }, [])
+
+  const handleSubmit = React.useCallback((form) => {
+    // api call goes here and then login with data from the api
+    setLoading(true)
+    setTimeout(() => {
+      login()
+      setLoading(false)
+    }, 3000)
+  }, [login])
+
   return (
     <div  className='min-h-screen h-screen w-full '>
       <div className='w-4/12 flex justify-center   object-contain'>
@@ -21,7 +51,7 @@ function Home() {
 
           <h3 className='text-2xl text-[#2E05D4] font-bold py-6'>Good Morning Techy!</h3> */}
 
-          <LoginForm />
+          <LoginForm form={form} onChange={handleChange} loading={loading} errors={errors} onSubmit={handleSubmit} />
         </div>
         <div className=' flex items-start pt-24  w-6/12 h-full '>
 

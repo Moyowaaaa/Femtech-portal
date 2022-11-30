@@ -39,7 +39,7 @@ const NotAuthenticated = ({ children }) => {
 			else {
 				const route = unsafeCheckRoute(_nextRoute, filteredRoutes);
 				if (route !== null) setNextRoute(route);
-				else setNextRoute(routes.HOME_PAGE_URL);
+				else setNextRoute(routes.DASHBOARD_PAGE);
 			}
 		};
 		checkRoute();
