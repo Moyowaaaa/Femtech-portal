@@ -6,7 +6,7 @@ import Logo from '../images/logo.svg'
 import leftMan from '../images/left_man.svg'
 import rightMan from '../images/right_man.svg'
 
-export default function Home() {
+function Home() {
   return (
     <div  className='min-h-screen h-screen w-full '>
       <div className='w-4/12 flex justify-center   object-contain'>
@@ -49,3 +49,7 @@ media”
     </div>
   )
 }
+
+Home.authRequired = false;
+
+export default Home;

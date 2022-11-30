@@ -22,4 +22,6 @@ const AttendanceFailed = () => {
   )
 }
 
+AttendanceFailed.authRequired = true;
+
 export default AttendanceFailed

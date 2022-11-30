@@ -9,7 +9,7 @@ import rightMan from '../../images/right_man.svg'
 import Admin from '../../images/admin.svg'
 import AdminForm from '../../components/admin/AdminForm'
 
-const index = () => {
+const AdminPage = () => {
   return (
     <div  className='min-h-screen h-screen w-full '>
     <div className='flex w-full h-full'>
@@ -53,4 +53,6 @@ media”
   )
 }
 
-export default index
+AdminPage.authRequired = true;
+
+export default AdminPage

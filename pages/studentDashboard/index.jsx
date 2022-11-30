@@ -30,4 +30,6 @@ const StudentDashboard = () => {
   )
 }
 
+StudentDashboard.authRequired = true;
+
 export default StudentDashboard

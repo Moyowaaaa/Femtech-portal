@@ -21,4 +21,6 @@ const AttendanceSuccessful = () => {
   )
 }
 
+AttendanceSuccessful.authRequired = true;
+
 export default AttendanceSuccessful

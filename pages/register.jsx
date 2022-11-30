@@ -7,7 +7,7 @@ import snip1 from '../images/snip1.svg'
 import snip2 from '../images/snip2.svg'
 import RegisterForm from '../components/RegisterForm'
 
-const register = () => {
+const Register = () => {
   return (
     <div  className='min-h-screen h-screen w-full '>
     <div className='flex w-full h-full'>
@@ -51,4 +51,6 @@ media”
   )
 }
 
-export default register
+Register.authRequired = false;
+
+export default Register
