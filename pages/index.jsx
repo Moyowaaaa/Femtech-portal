@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import Attendance from '../../components/studentDashboard/Attendance'
-import Calendar from '../../components/studentDashboard/Calendar'
-import Events from '../../components/studentDashboard/Events'
-import Menu from '../../components/studentDashboard/Menu'
-import Profile from '../../components/studentDashboard/Profile'
-import userProfileImage from '../../images/profileImage.svg'
+import Attendance from '../components/studentDashboard/Attendance'
+import Calendar from '../components/studentDashboard/Calendar'
+import Events from '../components/studentDashboard/Events'
+import Menu from '../components/studentDashboard/Menu'
+import Profile from '../components/studentDashboard/Profile'
+import userProfileImage from '../images/profileImage.svg'
 import Image from 'next/image'
 
 
 const StudentDashboard = () => {
-  const [studentAction, setStudentAction] = useState('Attendance')
+  const [studentAction, setStudentAction] = useState('Profile Update')
 
 
 
