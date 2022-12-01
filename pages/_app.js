@@ -3,7 +3,7 @@ import {
   CheckAuth,
   NotAuthenticated,
 } from "../layout/protections";
-import GlobalContextProvider from '../store';
+import GlobalContextProvider from "../store";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
@@ -12,12 +12,28 @@ function MyApp({ Component, pageProps }) {
       <CheckAuth>
         {Component.authRequired === false ? (
           <NotAuthenticated>
-            <Component {...pageProps} />
+            {Component.Layout ? (
+              <Component.Layout>
+                <Component {...pageProps} />
+              </Component.Layout>
+            ) : (
+              <Component {...pageProps} />
+            )}
           </NotAuthenticated>
         ) : Component.authRequired === true ? (
           <Authenticated>
-            <Component {...pageProps} />
+            {Component.Layout ? (
+              <Component.Layout>
+                <Component {...pageProps} />
+              </Component.Layout>
+            ) : (
+              <Component {...pageProps} />
+            )}
           </Authenticated>
+        ) : Component.Layout ? (
+          <Component.Layout>
+            <Component {...pageProps} />
+          </Component.Layout>
         ) : (
           <Component {...pageProps} />
         )}
