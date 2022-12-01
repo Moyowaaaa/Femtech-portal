@@ -49,7 +49,7 @@ const Menu = () => {
           <p>My Instructor</p>
         </div>
 
-        <div onClick={logout} className="cursor-pointer flex gap-2">
+        <div onClick={logout} className="cursor-pointer flex gap-2 hover:border-2 hover:p-2 hover:border-[blue]">
           <Image src={logoutImage} alt="" />
           <p>Logout</p>
         </div>
