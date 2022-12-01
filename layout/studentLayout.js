@@ -10,7 +10,7 @@ function StudentLayout({ children }) {
 			<Menu />
 
 			{children}
-			<div className="w-4/12 flex flex-col gap-6">
+			<div className="w-3/12 flex flex-col gap-6">
 				<div className="shadow rounded-md  w-full py-2 flex justify-between items-center pr-6 pl-24 text-xl font-semibold">
 					HEY, John
 					<div className="w-[5rem] h-[5rem] rounded-full">
