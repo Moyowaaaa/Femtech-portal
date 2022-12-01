@@ -113,7 +113,7 @@ function Register({ form, onChange, loading, errors, setErrors, onSubmit }) {
 
           <div className="flex items-center justify-end">
             <Link href={LOGIN_PAGE}>
-              <a className="align-baseline capitalize cursor-pointer font-bold inline-block text-primary-500 text-sm hover:text-primary-600 hover:underline">
+              <a className="align-baseline capitalize cursor-pointer font-bold inline-block text-primary-600 text-sm hover:text-primary-600 hover:underline">
                 Sign In
               </a>
             </Link>
