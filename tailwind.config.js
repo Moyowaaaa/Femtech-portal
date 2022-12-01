@@ -1,12 +1,31 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+
+const withMT = require("@material-tailwind/react/utils/withMT");
+
+module.exports = withMT({
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./layout/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./utils/**/*.{js,ts,jsx,tsx}",
   ],
   mode: 'jit',
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: {
+          100: "#e9ebfb",
+          200: "#a8aff0",
+          300: "#7c87e9",
+          400: "#515fe1",
+          500: "#3041dc",
+          600: "#1e2cae",
+          700: "#121c6d",
+          800: "#0b1141",
+          900: "#040616",
+        },
+      }
+    },
   },
   variants: {
     animation: ['responsive', 'motion-safe', 'motion-reduce'],
@@ -16,4 +35,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+})
