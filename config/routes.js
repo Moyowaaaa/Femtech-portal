@@ -1,7 +1,9 @@
+export const ATTENDANCE_PAGE = '/attendance/';
+
 export const DASHBOARD_PAGE = '/';
 
 export const HOME_PAGE = "/";
 
 export const LOGIN_PAGE = "/login/";
 
-export const REGISTER_PAGE = 'register';
+export const REGISTER_PAGE = '/register/';
