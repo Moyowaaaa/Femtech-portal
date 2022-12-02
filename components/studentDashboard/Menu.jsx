@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FaClock, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import { FaBook, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 
 import * as routes from "../../config/routes";
 import { useAuthContext } from "../../store/contexts";
@@ -23,7 +23,7 @@ function MenuLink({ active, icon: Icon, link, title }) {
           } flex items-center text-sm py-4 px-6 h-12 overflow-hidden whitespace-nowrap rounded transition duration-300 ease-in-out`}
         >
           {/*<Image alt="" src={profile} />*/}
-          <Icon className="h-3 mr-3 text-primary-600 w-3" />
+          <Icon className={`h-3 mr-3 ${active ? 'text-gray-200' : 'text-primary-600'} w-3`} />
           <span className="inline-block">{title}</span>
         </a>
       </Link>
@@ -39,20 +39,23 @@ const Menu = () => {
   return (
     <div className="w-3/12 shadow-lg rounded-md cursor-pointer">
       <div className="h-full shadow-md bg-white p-1">
+        <h1 className="text-[#187DF3] mb-3 p-3 font-bold text-2xl">Menu</h1>
         <ul className="relative">
           <MenuLink
+            active={pathname === routes.COURSES_PAGE || pathname === '/courses'}
+            icon={FaBook}
+            link={routes.COURSES_PAGE}
+            title="Courses"
+          />
+          <MenuLink
+            active={pathname === routes.DASHBOARD_PAGE}
             icon={FaUserCircle}
             link={routes.DASHBOARD_PAGE}
             title="Profile"
           />
-          <MenuLink
-            icon={FaClock}
-            link={routes.ATTENDANCE_PAGE}
-            title="Attendance"
-          />
           <li className="relative" onClick={logout}>
             <div className="flex items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out">
-              <FaSignOutAlt className="h-3 mr-3 text-primary-600 w-2" />
+              <FaSignOutAlt className="h-4 mr-3 text-primary-600 w-3" />
               <span>Sign Out</span>
             </div>
           </li>
