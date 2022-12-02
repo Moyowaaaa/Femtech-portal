@@ -51,7 +51,9 @@ function Courses() {
 								className="bg-white border border-gray-100 cursor-pointer duration-500 flex items-center p-3 rounded-lg shadow-l transition transform hover:scale-105 hover:bg-gray-100"
 								key={index}
 							>
-								<span className="bg-gray-200 flex items-center justify-center font-bold h-[3rem] rounded-full mr-1 text-gray-600 text-xl uppercase w-[3rem]">
+								<span className={`${
+									title.length > 65 ? "w-[4rem]" : "w-[3rem]"
+								} bg-gray-200 flex items-center justify-center font-bold h-[3rem] min-w-[3rem] rounded-full mr-1 text-gray-600 text-xl uppercase`}>
 									{title[0].toUpperCase()}
 								</span>
 								<p className="font-semibold ml-1 text-gray-700 text-sm tracking-wider md:text-base">
