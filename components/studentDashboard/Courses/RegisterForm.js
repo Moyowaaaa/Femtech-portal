@@ -1,5 +1,6 @@
 import {
 	Button,
+	Input,
 	Dialog,
 	DialogHeader,
 	DialogBody,
@@ -11,9 +12,23 @@ import { toast } from "react-toastify";
 import { REGISTER_COURSE_URL } from "../../../config";
 import { useAuthContext } from "../../../store/contexts";
 
-function RegisterForm({ open, handleOpen, courses, onRegisterSuccess }) {
+function RegisterForm({ open, setOpen, courses = [], onRegisterSuccess }) {
 	const [selectOpen, setSelectOpen] = React.useState(false);
 	const [selectedCourse, setSelectedCourse] = React.useState(null);
+	const [search, setSearch] = React.useState("")
+
+	// Represents the filtered courses by search input
+	const filCourses = React.useMemo(() => {
+		if (Array.isArray(courses)) {
+			const filSearch = search.toLowerCase().trim()
+			if (filSearch === "") return courses
+			return courses.filter(course => {
+				const name = course.name.toLowerCase();
+				if (name.includes(filSearch)) return course
+			})	
+		}
+		return []
+	}, [courses, search])
 
 	const { loading, register } = useRegisterCourseRequest({
 		onSuccess: () => {
@@ -27,10 +42,18 @@ function RegisterForm({ open, handleOpen, courses, onRegisterSuccess }) {
 	});
 
 	return (
-		<Dialog size="lg" open={open} handler={handleOpen}>
+		<Dialog size="lg" open={open} handler={() => setOpen(prevState => !prevState)}>
 			<DialogHeader>Register a new course</DialogHeader>
 			<DialogBody divider>
-				<div className="h-full min-h-[15rem] w-full">
+				<div className="h-full min-h-[15rem] pb-[8rem] w-full">
+					<div className="mb-4">
+						<Input 
+							label="Search for a course"
+							onFocus={() => setSelectOpen(true)}
+							onChange={({target:{value}}) => setSearch(value)}
+							value={search}
+						/>
+					</div>
 					<div className="h-full">
 						<label
 							id="listbox-label"
@@ -81,7 +104,7 @@ function RegisterForm({ open, handleOpen, courses, onRegisterSuccess }) {
 										: "hidden opacity-0 invisible"
 								} absolute duration-500 transition min-h-[16rem] transform z-10 mt-1 h-full w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm`}
 							>
-								{courses.map((course) => (
+								{filCourses.map((course) => (
 									<li
 										onClick={
 											!loading
@@ -152,7 +175,11 @@ function RegisterForm({ open, handleOpen, courses, onRegisterSuccess }) {
 					disabled={loading}
 					variant="text"
 					color="red"
-					onClick={!loading ? handleOpen : undefined}
+					onClick={!loading ? () => {
+						setSelectOpen(false)
+						setSelectedCourse(null)
+						setSearch("")
+					} : undefined}
 					className="mr-1"
 				>
 					<span>Cancel</span>

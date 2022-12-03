@@ -23,13 +23,16 @@ function Courses() {
 	const { courses, loading } = useGetAllCourses();
  
 	const [open, setOpen] = React.useState(false);
-  const handleOpen = React.useCallback(() => setOpen(prevState => !prevState), []);
 
 	return (
 		<React.Fragment>
 			<div className="w-6/12 px-5">
 				<div className="mb-4">
-					<Button disabled={loading} color={loading ? "gray" : "blue"} onClick={handleOpen}>
+					<Button 
+						disabled={loading} 
+						color={loading ? "gray" : "blue"} 
+						onClick={() => setOpen(true)}
+					>
 						<span>{loading ? "Loading Courses. Please Wait" : "Register a new course"}</span>
 					</Button>
 				</div>
@@ -57,11 +60,11 @@ function Courses() {
 				<RegisterCourseForm 
 					courses={courses} 
 					open={open} 
-					handleOpen={handleOpen} 
+					setOpen={setOpen} 
 					onRegisterSuccess={() => {
 						refetch()
 						setOpen(false)
-						toast.success("Registered for course successfuly!", { autoClose: 10000 })
+						toast.success("Registered for course successfully!", { autoClose: 10000 })
 					}}
 				/>
 			</div>
