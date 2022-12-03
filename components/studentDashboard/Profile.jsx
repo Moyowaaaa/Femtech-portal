@@ -1,22 +1,30 @@
 import React from 'react'
 
+import { useAuthContext } from '../../store/contexts'
+
 const Profile = () => {
+  const { data } = useAuthContext();
+
   return (
     <div className='shadow rounded-md border-2 border-[green] w-5/12 p-4 '>
         <h1 className='text-[#187DF3] font-bold text-2xl'>Profile</h1>
-        <div class="py-3">
-          <h3 class="text-lg font-medium leading-6 text-gray-700">Student Information</h3>
-          <p class="mt-1 max-w-2xl text-sm text-gray-500">Details</p>
+        <div className="py-3">
+          <h3 className="text-lg font-medium leading-6 text-gray-700">Student Information</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">Details</p>
         </div>
-         <div class="border-t border-gray-200 mt-5">
+         <div className="border-t border-gray-200 mt-5">
             <dl>
-              <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt class="text-sm font-medium text-gray-500">Student Name</dt>
-                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">John Doe</dd>
+              <div className="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium text-gray-500">Student Name</dt>
+                <dd className="capitalize mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                  {data?.user?.fullname}
+                </dd>
               </div>
-              <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt class="text-sm font-medium text-gray-500">Student ID</dt>
-                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">20/17AE/0057</dd>
+              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium text-gray-500">Student ID</dt>
+                <dd className="mt-1 text-sm text-gray-900 uppercase sm:col-span-2 sm:mt-0">
+                  {data?.user?.user_id}
+                </dd>
               </div>
             </dl>
         </div>    
