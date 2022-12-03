@@ -6,26 +6,6 @@ import { FaBook, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import * as routes from "../../config/routes";
 import { useAuthContext } from "../../store/contexts";
 
-function MenuLink({ active, icon: Icon, link, title }) {
-  return (
-    <li className="relative">
-      <Link href={link || "#"}>
-        <a
-          className={`${
-            active
-              ? "bg-primary-600 text-gray-100"
-              : "bg-transparent text-gray-700 hover:text-gray-900 hover:bg-gray-100"
-          } flex items-center text-sm py-4 px-6 h-12 overflow-hidden whitespace-nowrap rounded transition duration-300 ease-in-out`}
-        >
-          {/*<Image alt="" src={profile} />*/}
-          <Icon className={`h-3 mr-3 ${active ? 'text-gray-200' : 'text-primary-600'} w-3`} />
-          <span className="inline-block">{title}</span>
-        </a>
-      </Link>
-    </li>
-  );
-}
-
 const Menu = () => {
   const { logout } = useAuthContext();
 
@@ -59,6 +39,26 @@ const Menu = () => {
     </div>
   );
 };
+
+function MenuLink({ active, icon: Icon, link, title }) {
+  return (
+    <li className="relative">
+      <Link href={link || "#"}>
+        <a
+          className={`${
+            active
+              ? "bg-primary-600 text-gray-100"
+              : "bg-transparent text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+          } flex items-center text-sm py-4 px-6 h-12 overflow-hidden whitespace-nowrap rounded transition duration-300 ease-in-out`}
+        >
+          {/*<Image alt="" src={profile} />*/}
+          <Icon className={`h-3 mr-3 ${active ? 'text-gray-200' : 'text-primary-600'} w-3`} />
+          <span className="inline-block">{title}</span>
+        </a>
+      </Link>
+    </li>
+  );
+}
 
 export default Menu;
 // import React from "react";
