@@ -10,11 +10,14 @@ const CheckAuth = ({
 	const [loading, setLoading] = React.useState(true)
 
 	React.useEffect(() => {
-		setTimeout(() => {
-			setLoading(false)
+		const user = localStorage.getItem('user')
+		if (user) {
+			login(JSON.parse(user))
+		} else {
 			logout()
-		}, 3000)
-	}, [logout])
+		}
+		setLoading(false)
+	}, [login, logout])
 
 	return loading ? (
 		<SplashScreen />

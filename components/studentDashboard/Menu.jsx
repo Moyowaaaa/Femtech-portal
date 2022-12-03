@@ -6,11 +6,6 @@ import { FaBook, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import * as routes from "../../config/routes";
 import { useAuthContext } from "../../store/contexts";
 
-// import instructor from "../../images/instructor.svg";
-// import profile from "../../images/profile.svg";
-// import attendance from "../../images/attendance.svg";
-// import logoutImage from "../../images/logout.svg";
-
 function MenuLink({ active, icon: Icon, link, title }) {
   return (
     <li className="relative">

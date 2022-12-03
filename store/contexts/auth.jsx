@@ -17,12 +17,14 @@ function AuthProvider({ children }) {
 	const [auth, setAuth] = useState(false);
 
 	const login = useCallback((userData) => {
+		localStorage.setItem('user', JSON.stringify(userData))
 		setData(userData);
 		setLoading(false);
 		setAuth(true);
 	}, []);
 
 	const logout = useCallback(() => {
+		localStorage.removeItem('user')
 		setLoading(false);
 		setAuth(false);
 		setData(undefined);
