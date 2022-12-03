@@ -150,7 +150,7 @@ const Attendance = () => {
         <div className="shadow rounded-md w-full py-2 px-4 flex justify-between items-center text-base font-semibold">
           Hey, {data?.user?.fullname}
         </div>
-        <Calendar />
+        <Calendar attendance={attendData || []} />
       </div>
     </React.Fragment>
   );
