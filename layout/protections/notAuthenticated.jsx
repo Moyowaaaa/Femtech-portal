@@ -10,10 +10,7 @@ const NotAuthenticated = ({ children }) => {
 	return isLoading === false && isAuthenticated === false ? (
 		<React.Fragment>{children}</React.Fragment>
 	) : isLoading === false && isAuthenticated ? (
-		<Navigate
-			to={routes.DASHBOARD_PAGE}
-			query={undefined} // remove the query object
-		/>
+		<Navigate to={routes.DASHBOARD_PAGE} />
 	) : (
 		<></>
 	);
