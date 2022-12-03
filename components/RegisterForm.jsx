@@ -1,4 +1,4 @@
-import { Alert, Button } from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
@@ -14,7 +14,7 @@ import { Input } from "./controls";
 import { LOGIN_PAGE } from "../config";
 import logo from "../images/logo.svg";
 
-function Register({ form, onChange, loading, errors, setErrors, onSubmit }) {
+function Register({ form, onChange, loading, onSubmit }) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   return (
@@ -33,24 +33,6 @@ function Register({ form, onChange, loading, errors, setErrors, onSubmit }) {
             Sign Up
           </h2>
         </div>
-        {errors?.message && (
-          <div className="mt-2">
-            <Alert
-              color="red"
-              icon={<FaExclamationCircle />}
-              show
-              dismissible={{
-                onClose: () =>
-                  setErrors((prevState) => ({
-                    ...prevState,
-                    message: undefined,
-                  })),
-              }}
-            >
-              {errors.message}
-            </Alert>
-          </div>
-        )}
         <form
           className="mt-4 space-y-6"
           method="POST"
@@ -63,31 +45,28 @@ function Register({ form, onChange, loading, errors, setErrors, onSubmit }) {
             <div className="my-4">
               <Input
                 disabled={loading}
-                error={errors?.fullName}
                 label="Full Name"
                 icon={<FaUser />}
                 onChange={onChange}
                 required
-                name="fullName"
-                value={form?.fullName || ""}
+                name="full_name"
+                value={form?.full_name || ""}
               />
             </div>
             <div className="my-4">
               <Input
                 disabled={loading}
-                error={errors?.studentId}
                 label="Student ID"
                 icon={<FaIdBadge />}
                 onChange={onChange}
                 required
-                name="studentId"
-                value={form?.studentId || ""}
+                name="user_id"
+                value={form?.user_id || ""}
               />
             </div>
             <div className="my-4">
               <Input
                 disabled={loading}
-                error={errors?.password}
                 label="Password"
                 icon={
                   showPassword ? (
