@@ -1,4 +1,6 @@
 import { ThemeProvider } from "@material-tailwind/react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   Authenticated,
@@ -40,6 +42,7 @@ function MyApp({ Component, pageProps }) {
           ) : (
             <Component {...pageProps} />
           )}
+          <ToastContainer />
         </CheckAuth>
       </GlobalContextProvider>
     </ThemeProvider>
