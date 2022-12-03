@@ -8,14 +8,11 @@ import { LOGIN_PAGE, REGISTER_URL } from "../config";
 import snip1 from "../images/snip1.svg";
 import snip2 from "../images/snip2.svg";
 
-function useRegisterRequest() {
-  const [success, setSuccess] = React.useState(false);
-  const [errors, setErrors] = React.useState([]);
+function useRegisterRequest({ onSuccess, onError }) {
   const [loading, setLoading] = React.useState(false);
 
   const register = React.useCallback((form) => {
     setLoading(true);
-    setSuccess(false); // Just incase the user goes back to the previous page
     fetch(REGISTER_URL, {
       method: "POST",
       headers: {
@@ -25,25 +22,25 @@ function useRegisterRequest() {
       },
       body: JSON.stringify({
         ...form,
-        user_id: form.user_id.toUpperCase() // force the ID to uppercase
+        user_id: form.user_id.toUpperCase(), // force the ID to uppercase
       }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data?.status === 201) {
-          setSuccess(true);
+          onSuccess();
         } else {
           if (data?.status_code && data.status_code !== 200) {
             if (data.message) {
-              setErrors([...data.message.split(",")]);
+              onError([...data.message.split(",")]);
             } else {
-              setErrors(["An error occurred!"]);
+              onError(["An error occurred!"]);
             }
           }
         }
       })
       .catch((error) => {
-        setErrors([error?.message || "A server error occurred!"]);
+        onErrors([error?.message || "A server error occurred!"]);
       })
       .finally(() => {
         setLoading(false);
@@ -51,18 +48,33 @@ function useRegisterRequest() {
   }, []);
 
   return {
-    errors,
     loading,
     register,
-    success,
   };
 }
 
 const Register = () => {
-  const [form, setForm] = React.useState();
+  const [form, setForm] = React.useState({
+    user_id: "",
+    password: "",
+    full_name: ""
+  });
 
   const router = useRouter();
-  const { success, errors, loading, register } = useRegisterRequest();
+
+  const { loading, register } = useRegisterRequest({
+    onSuccess() {
+      toast.success("Registration was successful", { autoClose: 5000 });
+      router.push(LOGIN_PAGE);
+    },
+    onError(errors) {
+      if (errors && errors.length > 0) {
+        errors.forEach((errorMessage) => {
+          toast.error(errorMessage, { autoClose: 20000 });
+        });
+      }
+    },
+  });
 
   const handleChange = React.useCallback(({ target: { name, value } }) => {
     setForm((prevState) => ({
@@ -70,21 +82,6 @@ const Register = () => {
       [name]: value,
     }));
   }, []);
-
-  React.useEffect(() => {
-    if (errors && errors.length > 0) {
-      errors.forEach((errorMessage) => {
-        toast.error(errorMessage, { autoClose: 20000 });
-      });
-    }
-  }, [errors]);
-
-  React.useEffect(() => {
-    if (success === true) {
-      toast.success("Registration was successful", { autoClose: 20000 });
-      router.push(LOGIN_PAGE)
-    }
-  }, [router, success]);
 
   return (
     <div className="bg-gray-200 min-h-screen h-full w-full">

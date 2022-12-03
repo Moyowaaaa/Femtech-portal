@@ -56,7 +56,7 @@ function Register({ form, onChange, loading, onSubmit }) {
             <div className="my-4">
               <Input
                 disabled={loading}
-                label="Student ID"
+                label="Student/User ID"
                 icon={<FaIdBadge />}
                 onChange={onChange}
                 required
@@ -106,7 +106,7 @@ function Register({ form, onChange, loading, onSubmit }) {
               variant="gradient"
               type="submit"
             >
-              {loading ? "Signing Up..." : "Sign Up"}
+              {loading ? "Signing Up ..." : "Sign Up"}
             </Button>
           </div>
         </form>

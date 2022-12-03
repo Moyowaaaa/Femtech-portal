@@ -1,4 +1,4 @@
-import { Alert, Button } from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
@@ -13,7 +13,7 @@ import { Input } from "./controls";
 import { REGISTER_PAGE } from "../config";
 import logo from "../images/logo.svg";
 
-function Register({ form, onChange, loading, errors, setErrors, onSubmit }) {
+function Register({ form, onChange, loading, onSubmit }) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   return (
@@ -32,24 +32,6 @@ function Register({ form, onChange, loading, errors, setErrors, onSubmit }) {
             Sign In
           </h2>
         </div>
-        {errors?.message && (
-          <div className="mt-2">
-            <Alert
-              color="red"
-              icon={<FaExclamationCircle />}
-              show
-              dismissible={{
-                onClose: () =>
-                  setErrors((prevState) => ({
-                    ...prevState,
-                    message: undefined,
-                  })),
-              }}
-            >
-              {errors.message}
-            </Alert>
-          </div>
-        )}
         <form
           className="mt-4 space-y-6"
           method="POST"
@@ -62,19 +44,17 @@ function Register({ form, onChange, loading, errors, setErrors, onSubmit }) {
             <div className="my-4">
               <Input
                 disabled={loading}
-                error={errors?.studentId}
-                label="Student ID"
+                label="Student/User ID"
                 icon={<FaIdBadge />}
                 onChange={onChange}
                 required
-                name="studentId"
-                value={form?.studentId || ""}
+                name="user_id"
+                value={form?.user_id || ""}
               />
             </div>
             <div className="my-4">
               <Input
                 disabled={loading}
-                error={errors?.password}
                 label="Password"
                 icon={
                   showPassword ? (
@@ -114,7 +94,7 @@ function Register({ form, onChange, loading, errors, setErrors, onSubmit }) {
               variant="gradient"
               type="submit"
             >
-              {loading ? "Signing In..." : "Sign In"}
+              {loading ? "Signing In ..." : "Sign In"}
             </Button>
           </div>
         </form>
