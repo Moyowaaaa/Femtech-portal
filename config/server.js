@@ -1,5 +1,7 @@
 const BASE_URL = 'http://localhost:8000/api'
 
+export const GET_PRESENT_ATTENDANCE_URL = (id) => BASE_URL + `/user/fetch_present_attendance/${id}`;
+
 export const REGISTER_COURSE_URL = (id) => BASE_URL + `/user/add_course/${id}`;
 
 export const COURSES_URL = BASE_URL + '/user/courses';
