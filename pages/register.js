@@ -86,7 +86,7 @@ const Register = () => {
   return (
     <div className="bg-gray-200 min-h-screen h-full w-full">
       <div className="flex items-center w-full h-full">
-        <div className="w-6/12 h-full flex flex-col px-8 mx-6">
+        <div className="w-5/12 h-full flex flex-col px-8 mx-6">
           <RegisterForm
             form={form}
             loading={loading}
@@ -94,12 +94,13 @@ const Register = () => {
             onChange={handleChange}
           />
         </div>
-        <div className="flex items-start w-6/12 h-full">
-          <div className="pt-16">
+        <div className="flex items-start w-7/12 h-full">
+          <img className="h-[100vh] w-full" src="/fiti-attend-bg.jpg" alt="" />
+          {/*<div className="pt-16">
             <Image src={snip1} alt="snip1" />
           </div>
 
-          <Image src={snip2} alt="snip1" />
+          <Image src={snip2} alt="snip1" />*/}
         </div>
       </div>
     </div>

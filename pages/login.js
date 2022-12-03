@@ -85,7 +85,7 @@ function Page() {
 
   return (
     <div className="bg-gray-200 flex items-center min-h-screen h-full w-full">
-      <div className="w-6/12 h-full flex flex-col px-8 mx-6">
+      <div className="w-5/12 h-full flex flex-col px-8 mx-6">
         <LoginForm
           form={form}
           onChange={handleChange}
@@ -93,9 +93,10 @@ function Page() {
           onSubmit={loginUser}
         />
       </div>
-      <div className="flex items-start w-6/12 h-full ">
-        <Image src={leftMan} alt="" />
-        <Image src={rightMan} alt="" />
+      <div className="flex items-start w-7/12 h-full ">
+        <img className="h-[100vh] w-full" src="/fiti-attend-bg.jpg" alt="" />
+        {/*<Image src={leftMan} alt="" />
+        <Image src={rightMan} alt="" />*/}
       </div>
     </div>
   );
