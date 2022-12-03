@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import {
   CLOCK_IN_URL,
   CLOCK_OUT_URL,
+  GET_ALL_ATTENDANCE_URL,
   GET_PRESENT_ATTENDANCE_URL,
 } from "../../config";
 
@@ -68,21 +69,26 @@ function Chart() {
 const Attendance = () => {
   const { data } = useAuthContext();
 
+  const {
+    refetch: refetchAllAttendance,
+    attendance: attendData,
+  } = useGetAllAttendance();
+
   const { refetch, loading, attendance } = useGetAttendance();
   const { clockIn, loading: clockInLoading } = useClockIn({
     onSuccess() {
       refetch();
-      toast.success('Clocked in successfully!')
-    }
+      refetchAllAttendance();
+      toast.success("Clocked in successfully!");
+    },
   });
   const { clockOut, loading: clockOutLoading } = useClockOut({
     onSuccess() {
       refetch();
-      toast.success('Clocked out successfully!')
-    }
+      refetchAllAttendance();
+      toast.success("Clocked out successfully!");
+    },
   });
-
-  console.log({ attendance })
 
   return (
     <React.Fragment>
@@ -129,7 +135,9 @@ const Attendance = () => {
             >
               <span>Clock Out</span>
             </Button>
-          ) : <>You have clocked out for this course today.</>}
+          ) : (
+            <>You have clocked out for this course today.</>
+          )}
         </div>
 
         <blockquote className="bg-[black] border border-gray-900 font-bolder p-4 mt-4 rounded-md text-center text-white">
@@ -240,37 +248,84 @@ function useGetAttendance() {
 
   const { data } = useAuthContext();
 
-  const { query } = useRouter()
+  const { query } = useRouter();
 
-  const getAttendance = React.useCallback(
-    () => {
-      setLoading(true);
-      fetch(GET_PRESENT_ATTENDANCE_URL(query.courseId), {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + data?.token,
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-        },
+  const getAttendance = React.useCallback(() => {
+    setLoading(true);
+    fetch(GET_PRESENT_ATTENDANCE_URL(query.courseId), {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + data?.token,
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data) && data[0] !== undefined) {
+          setAttendance(data[0]);
+        } else {
+          toast.warning("You have not clocked in for this course today!");
+        }
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (Array.isArray(data) && data[0] !== undefined) {
-            setAttendance(data[0]);
-          } else {
-            toast.warning("You have not clocked in for this course today!");
-          }
-        })
-        .catch((error) => {
-          toast.error("A server error occurred!");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    },
-    [data, query]
-  );
+      .catch((error) => {
+        toast.error("A server error occurred!");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [data, query]);
+
+  React.useEffect(() => {
+    getAttendance();
+  }, [getAttendance]);
+
+  return {
+    attendance,
+    loading,
+    refetch: getAttendance,
+  };
+}
+
+function useGetAllAttendance() {
+  const [attendance, setAttendance] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  const { data } = useAuthContext();
+
+  const { query } = useRouter();
+
+  const getAttendance = React.useCallback(() => {
+    setLoading(true);
+    fetch(GET_ALL_ATTENDANCE_URL(query.courseId), {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + data?.token,
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setAttendance(data);
+        } else {
+          toast.error(
+            "An error occurred. Unable to get weekly attendance for this course!"
+          );
+        }
+      })
+      .catch((error) => {
+        toast.error(
+          "A server error occurred. Unable to get weekly attendance for this course!"
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [data, query]);
 
   React.useEffect(() => {
     getAttendance();

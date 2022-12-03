@@ -4,6 +4,8 @@ export const CLOCK_IN_URL = BASE_URL + '/user/clock_in';
 
 export const CLOCK_OUT_URL = BASE_URL + '/user/clock_out';
 
+export const GET_ALL_ATTENDANCE_URL = (id) => BASE_URL + `/user/fetch_attendance/${id}`;
+
 export const GET_PRESENT_ATTENDANCE_URL = (id) => BASE_URL + `/user/fetch_present_attendance/${id}`;
 
 export const REGISTER_COURSE_URL = (id) => BASE_URL + `/user/add_course/${id}`;
