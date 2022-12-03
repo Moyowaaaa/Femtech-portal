@@ -6,45 +6,36 @@ import {
 	DialogFooter,
 } from "@material-tailwind/react";
 import React from "react";
+import { toast } from "react-toastify"
 import Link from "next/link";
 
-import { Select } from "../components/controls";
 import Events from "../components/studentDashboard/Events";
+import RegisterCourseForm from "../components/studentDashboard/Courses/RegisterForm";
+import { COURSES_URL, REGISTER_COURSE_URL, USER_COURSES_URL } from "../config";
+import { useAuthContext } from "../store/contexts"
 import Layout from "../layout/studentLayout";
 
-const courses = [
-	{
-		id: 1,
-		title: "Learn in-demand skills with over 200,000 video courses",
-	},
-	{
-		id: 2,
-		title: "Choose couress taught by real-world experts",
-	},
-	{
-		id: 3,
-		title: "Learn at your own pace, with lifetime access on mobile and desktop",
-	},
-	{
-		id: 4,
-		title:
-			"Choose from over 10,000,000 courses with new additions created every month",
-	},
-];
-
 function Courses() {
-	const [open, setOpen] = React.useState(false);
-	const [course, setCourse] = React.useState("")
+
+	const { data } = useAuthContext()
+
+	const { courses: userCourses, loading: userCoursesLoading, refetch } = useGetUserCourses();
+	const { courses, loading } = useGetAllCourses();
  
+	const [open, setOpen] = React.useState(false);
   const handleOpen = React.useCallback(() => setOpen(prevState => !prevState), []);
 
 	return (
 		<React.Fragment>
 			<div className="w-6/12 px-5">
 				<div className="mb-4">
-					<Button color="blue" onClick={handleOpen}><span>Register a new course</span></Button>
+					<Button disabled={loading} color={loading ? "gray" : "blue"} onClick={handleOpen}>
+						<span>{loading ? "Loading Courses. Please Wait" : "Register a new course"}</span>
+					</Button>
 				</div>
-				{courses.map(({ id, title }, index) => (
+				{userCoursesLoading ? <>Loading Courses ...</> : userCourses.length <= 0 ? (
+					<>You have not registerd for any course. Click the button above to register</>
+					) : userCourses.map(({ id, course: name }, index) => (
 					<Link href={`/attendance/${id}/`} key={index}>
 						<a className="p-2 w-full">
 							<div
@@ -52,55 +43,121 @@ function Courses() {
 								key={index}
 							>
 								<span className={`${
-									title.length > 65 ? "w-[4rem]" : "w-[3rem]"
+									name.length > 65 ? "w-[4rem]" : "w-[3rem]"
 								} bg-gray-200 flex items-center justify-center font-bold h-[3rem] min-w-[3rem] rounded-full mr-1 text-gray-600 text-xl uppercase`}>
-									{title[0].toUpperCase()}
+									{name[0].toUpperCase()}
 								</span>
 								<p className="font-semibold ml-1 text-gray-700 text-sm tracking-wider md:text-base">
-									{title}
+									{name}
 								</p>
 							</div>
 						</a>
 					</Link>
 				))}
-				<Dialog open={open} handler={handleOpen}>
-					<DialogHeader>Register a new course</DialogHeader>
-					<DialogBody divider>
-						<div className="py-4 w-full">
-							<Select 
-								label="Select Course"
-								options={[]}
-								onChange={(value) => setCourse(value)}
-								value={course}
-							/>
-						</div>
-					</DialogBody>
-					<DialogFooter>
-						<Button
-							variant="text"
-							color="red"
-							onClick={handleOpen}
-							className="mr-1"
-						>
-							<span>Cancel</span>
-						</Button>
-						<Button variant="gradient" color="blue" onClick={handleOpen}>
-							<span>Register</span>
-						</Button>
-					</DialogFooter>
-				</Dialog>
+				<RegisterCourseForm 
+					courses={courses} 
+					open={open} 
+					handleOpen={handleOpen} 
+					onRegisterSuccess={() => {
+						refetch()
+						setOpen(false)
+						toast.success("Registered for course successfuly!", { autoClose: 10000 })
+					}}
+				/>
 			</div>
 			<div className="w-3/12 flex flex-col gap-6">
-				<div className="shadow rounded-md  w-full py-2 flex justify-between items-center pr-6 pl-24 text-xl font-semibold">
-					HEY, John
-					{/*<div className="w-[5rem] h-[5rem] rounded-full">
-              <Image src={userProfileImage} alt="" />
-            </div>*/}
+				<div className="shadow rounded-md w-full py-2 px-4 flex justify-between items-center text-base font-semibold">
+					Hey, {data?.user?.fullname}
 				</div>
 				<Events />
 			</div>
 		</React.Fragment>
 	);
+}
+
+function useGetAllCourses() {
+
+	const [courses, setCourses] = React.useState([]);
+	const [loading, setLoading] = React.useState(true)
+
+	const { data } = useAuthContext()
+
+	React.useEffect(() => {
+		setLoading(true);
+    fetch(COURSES_URL, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + data?.token,
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data?.status_code === 201) {
+          setCourses(data.message);
+        } else {
+        	toast.error("An error occurred!")
+        }
+      })
+      .catch((error) => {
+        toast.error("A server error occurred!")
+      })
+      .finally(() => {
+        setLoading(false)
+      });
+	}, [data])
+
+	return {
+		courses,
+		loading,
+	}
+}
+
+function useGetUserCourses() {
+
+	const [courses, setCourses] = React.useState([]);
+	const [loading, setLoading] = React.useState(true)
+
+	const { data } = useAuthContext()
+
+	const getCourses = React.useCallback(() => {
+		setLoading(true);
+		fetch(USER_COURSES_URL, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + data?.token,
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data?.status_code === 201) {
+        	if (Array.isArray(data.message) && data.message.length > 0) setCourses(data.message);
+        } else {
+        	toast.error("An error occurred!")
+        }
+      })
+      .catch((error) => {
+        toast.error("A server error occurred!")
+      })
+      .finally(() => {
+        setLoading(false)
+      });
+	}, [data])
+
+	React.useEffect(() => {
+		getCourses()    
+	}, [getCourses])
+
+	return {
+		courses,
+		loading,
+		refetch: getCourses
+	}
 }
 
 Courses.authRequired = true;
