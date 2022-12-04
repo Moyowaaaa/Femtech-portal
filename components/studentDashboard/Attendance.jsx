@@ -1,7 +1,6 @@
 import { Button } from "@material-tailwind/react";
 import React from "react";
 import { Pie } from "react-chartjs-2";
-import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
 import {
@@ -66,16 +65,21 @@ function Chart() {
   );
 }
 
-const Attendance = () => {
+const Attendance = ({ courseId }) => {
   const { data } = useAuthContext();
 
   const {
     refetch: refetchAllAttendance,
     attendance: attendData,
-  } = useGetAllAttendance();
+  } = useGetAllAttendance({
+    courseId
+  });
 
-  const { refetch, loading, attendance } = useGetAttendance();
+  const { refetch, loading, attendance } = useGetAttendance({
+    courseId
+  });
   const { clockIn, loading: clockInLoading } = useClockIn({
+    courseId,
     onSuccess() {
       refetch();
       refetchAllAttendance();
@@ -83,6 +87,7 @@ const Attendance = () => {
     },
   });
   const { clockOut, loading: clockOutLoading } = useClockOut({
+    courseId,
     onSuccess() {
       refetch();
       refetchAllAttendance();
@@ -156,10 +161,8 @@ const Attendance = () => {
   );
 };
 
-function useClockIn({ onSuccess }) {
+function useClockIn({ courseId, onSuccess }) {
   const [loading, setLoading] = React.useState(false);
-
-  const router = useRouter();
 
   const { data } = useAuthContext();
 
@@ -173,7 +176,7 @@ function useClockIn({ onSuccess }) {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ course_id: `${router.query.courseId}` }),
+      body: JSON.stringify({ course_id: courseId }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -201,10 +204,8 @@ function useClockIn({ onSuccess }) {
   };
 }
 
-function useClockOut({ onSuccess }) {
+function useClockOut({ courseId, onSuccess }) {
   const [loading, setLoading] = React.useState(false);
-
-  const router = useRouter();
 
   const { data } = useAuthContext();
 
@@ -218,7 +219,7 @@ function useClockOut({ onSuccess }) {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ course_id: `${router.query.courseId}` }),
+      body: JSON.stringify({ course_id: courseId }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -234,7 +235,7 @@ function useClockOut({ onSuccess }) {
       .finally(() => {
         setLoading(false);
       });
-  }, [data]);
+  }, [data, courseId]);
 
   return {
     clockOut,
@@ -242,17 +243,15 @@ function useClockOut({ onSuccess }) {
   };
 }
 
-function useGetAttendance() {
+function useGetAttendance({ courseId }) {
   const [attendance, setAttendance] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
 
   const { data } = useAuthContext();
 
-  const { query } = useRouter();
-
   const getAttendance = React.useCallback(() => {
     setLoading(true);
-    fetch(GET_PRESENT_ATTENDANCE_URL(query.courseId), {
+    fetch(GET_PRESENT_ATTENDANCE_URL(courseId), {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -275,7 +274,7 @@ function useGetAttendance() {
       .finally(() => {
         setLoading(false);
       });
-  }, [data, query]);
+  }, [data, courseId]);
 
   React.useEffect(() => {
     getAttendance();
@@ -288,17 +287,15 @@ function useGetAttendance() {
   };
 }
 
-function useGetAllAttendance() {
+function useGetAllAttendance({ courseId }) {
   const [attendance, setAttendance] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   const { data } = useAuthContext();
 
-  const { query } = useRouter();
-
   const getAttendance = React.useCallback(() => {
     setLoading(true);
-    fetch(GET_ALL_ATTENDANCE_URL(query.courseId), {
+    fetch(GET_ALL_ATTENDANCE_URL(courseId), {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -325,7 +322,7 @@ function useGetAllAttendance() {
       .finally(() => {
         setLoading(false);
       });
-  }, [data, query]);
+  }, [data, courseId]);
 
   React.useEffect(() => {
     getAttendance();
