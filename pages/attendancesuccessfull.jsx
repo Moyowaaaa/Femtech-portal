@@ -16,7 +16,7 @@ const AttendanceSuccessful = () => {
 			<Image src={success} alt="" />
 			<div className='flex gap-2 flex-col items-center  py-4'>
 				<h2 className='text-4xl font-bold '>Attendance Successful</h2>
-				<p className='text-2xl font-bold'>Please Go in to your class</p>
+				<p className='text-2xl font-bold'>Wish You A Safe Journey Home</p>
 	
 			  	<div className="flex items-center">
 			  		<button 
@@ -29,7 +29,7 @@ const AttendanceSuccessful = () => {
 							className='mx-6 px-12 rounded-md shadow-xl py-2 bg-[#1FAF38] text-lg font-bold text-white'
 							onClick={logout}
 						>
-							GO TO CLASS
+							GO HOME
 						</button>
 					</div>
 			

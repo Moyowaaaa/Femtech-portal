@@ -1,9 +1,13 @@
 import { Button } from "@material-tailwind/react";
+import { useRouter } from 'next/router'
 import React from "react";
 import { Pie } from "react-chartjs-2";
 import { toast } from "react-toastify";
 
 import {
+  ATTENDANCE_FAILED_PAGE,
+  ATTENDANCE_SUCCESSFUL_PAGE,
+  ATTENDANCE_SUCCESSFULL_PAGE,
   CLOCK_IN_URL,
   CLOCK_OUT_URL,
   GET_ALL_ATTENDANCE_URL,
@@ -67,6 +71,7 @@ function Chart() {
 
 const Attendance = ({ courseId }) => {
   const { data } = useAuthContext();
+  const router = useRouter();
 
   const {
     refetch: refetchAllAttendance,
@@ -84,7 +89,11 @@ const Attendance = ({ courseId }) => {
       refetch();
       refetchAllAttendance();
       toast.success("Clocked in successfully!");
+      router.push(ATTENDANCE_SUCCESSFUL_PAGE)
     },
+    onError() {
+      router.push(ATTENDANCE_FAILED_PAGE)
+    }
   });
   const { clockOut, loading: clockOutLoading } = useClockOut({
     courseId,
@@ -92,7 +101,11 @@ const Attendance = ({ courseId }) => {
       refetch();
       refetchAllAttendance();
       toast.success("Clocked out successfully!");
+      router.push(ATTENDANCE_SUCCESSFULL_PAGE)
     },
+    onError() {
+      router.push(ATTENDANCE_FAILED_PAGE)
+    }
   });
 
   return (
@@ -161,7 +174,7 @@ const Attendance = ({ courseId }) => {
   );
 };
 
-function useClockIn({ courseId, onSuccess }) {
+function useClockIn({ courseId, onSuccess, onError }) {
   const [loading, setLoading] = React.useState(false);
 
   const { data } = useAuthContext();
@@ -192,6 +205,7 @@ function useClockIn({ courseId, onSuccess }) {
       })
       .catch((error) => {
         toast.error("A server error occurred! Unable to clock in");
+        if (onError) onError()
       })
       .finally(() => {
         setLoading(false);
@@ -204,7 +218,7 @@ function useClockIn({ courseId, onSuccess }) {
   };
 }
 
-function useClockOut({ courseId, onSuccess }) {
+function useClockOut({ courseId, onSuccess, onError }) {
   const [loading, setLoading] = React.useState(false);
 
   const { data } = useAuthContext();
@@ -231,6 +245,7 @@ function useClockOut({ courseId, onSuccess }) {
       })
       .catch((error) => {
         toast.error("A server error occurred! Unable to clock out");
+        if (onError) onError()
       })
       .finally(() => {
         setLoading(false);
