@@ -14,9 +14,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider>
       <GlobalContextProvider>
-        <CheckAuth>
+        <CheckAuth admin={Component.adminAuth || false}>
           {Component.authRequired === false ? (
-            <NotAuthenticated>
+            <NotAuthenticated admin={Component.adminAuth || false}>
               {Component.Layout ? (
                 <Component.Layout>
                   <Component {...pageProps} />
@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }) {
               )}
             </NotAuthenticated>
           ) : Component.authRequired === true ? (
-            <Authenticated>
+            <Authenticated admin={Component.adminAuth || false}>
               {Component.Layout ? (
                 <Component.Layout>
                   <Component {...pageProps} />
