@@ -1,23 +1,36 @@
 import React from 'react';
 
-import { useAuthContext } from '../../store/contexts';
+import { useAdminAuthContext, useAuthContext } from '../../store/contexts';
 import { SplashScreen } from '../../utils';
 
 const CheckAuth = ({
+	admin = false,
 	children
 }) => {
 	const { login, logout } = useAuthContext();
+	const { login: adminLogin, logout: adminLogout } = useAdminAuthContext();
+
 	const [loading, setLoading] = React.useState(true)
 
 	React.useEffect(() => {
-		const user = localStorage.getItem('user')
-		if (user) {
-			login(JSON.parse(user))
+		setLoading(true)
+		if (admin) {
+			const admin = localStorage.getItem('admin')
+			if (admin) {
+				adminLogin(JSON.parse(admin))
+			} else {
+				adminLogout()
+			}
 		} else {
-			logout()
+			const user = localStorage.getItem('user')
+			if (user) {
+				login(JSON.parse(user))
+			} else {
+				logout()
+			}
 		}
 		setLoading(false)
-	}, [login, logout])
+	}, [admin, adminLogin, adminLogout login, logout])
 
 	return loading ? (
 		<SplashScreen />
