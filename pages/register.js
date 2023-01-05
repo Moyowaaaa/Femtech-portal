@@ -1,12 +1,9 @@
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
 
 import RegisterForm from "../components/RegisterForm";
 import { LOGIN_PAGE, REGISTER_URL } from "../config";
-import snip1 from "../images/snip1.svg";
-import snip2 from "../images/snip2.svg";
 
 function useRegisterRequest({ onSuccess, onError }) {
   const [loading, setLoading] = React.useState(false);
@@ -96,11 +93,6 @@ const Register = () => {
         </div>
         <div className="flex items-start w-7/12 h-full">
           <img className="h-[100vh] w-full" src="/fiti-attend-bg.jpg" alt="" />
-          {/*<div className="pt-16">
-            <Image src={snip1} alt="snip1" />
-          </div>
-
-          <Image src={snip2} alt="snip1" />*/}
         </div>
       </div>
     </div>
