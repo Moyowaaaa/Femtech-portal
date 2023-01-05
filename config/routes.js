@@ -1,3 +1,5 @@
+export const ADMIN_DASHBOARD_PAGE = '/admin/'
+
 export const ADMIN_LOGIN_PAGE = '/admin/login/';
 
 export const ADMIN_REGISTER_PAGE = '/admin/register/';
