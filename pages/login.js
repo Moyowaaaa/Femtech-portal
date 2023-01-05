@@ -1,12 +1,9 @@
-import Image from 'next/image';
 import React from "react";
 import { toast } from "react-toastify"
 
 import LoginForm from "../components/LoginForm";
 import { LOGIN_URL } from "../config";
 import { useAuthContext } from "../store/contexts";
-import leftMan from "../images/left_man.svg";
-import rightMan from "../images/right_man.svg";
 
 function useLoginRequest({ onSuccess, onError}) {
   const [loading, setLoading] = React.useState(false);
@@ -95,8 +92,6 @@ function Page() {
       </div>
       <div className="flex items-start w-7/12 h-full ">
         <img className="h-[100vh] w-full" src="/fiti-attend-bg.jpg" alt="" />
-        {/*<Image src={leftMan} alt="" />
-        <Image src={rightMan} alt="" />*/}
       </div>
     </div>
   );
