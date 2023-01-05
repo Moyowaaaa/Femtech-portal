@@ -30,7 +30,7 @@ const CheckAuth = ({
 			}
 		}
 		setLoading(false)
-	}, [admin, adminLogin, adminLogout login, logout])
+	}, [admin, adminLogin, adminLogout, login, logout])
 
 	return loading ? (
 		<SplashScreen />
