@@ -1,8 +1,10 @@
-import { AuthProvider } from './contexts';
+import { AdminAuthProvider, AuthProvider } from './contexts';
 
 function GlobalProvider({ children }) {
 	return (
-		<AuthProvider>{children}</AuthProvider>
+		<AdminAuthProvider>
+			<AuthProvider>{children}</AuthProvider>
+		</AdminAuthProvider>
 	);
 }
 
