@@ -60,14 +60,6 @@ function Dashboard() {
         Header: "Clocked Out",
         accessor: "clockOut",
       },
-      {
-        Header: "Percentage",
-        accessor: "percentage",
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-      },
       // {
       //   Header: "Actions",
       //   accessor: "id",
@@ -166,99 +158,81 @@ const globalData = [
     image: null,
     fullname: "John Doe",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-11-20",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
   {
     id: "fiti/22/002",
     image: null,
     fullname: "Anna Dey Johnson",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-11-24",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
   {
     id: "fiti/22/003",
     image: null,
     fullname: "Jeremiah Ismael",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-11-28",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
   {
     id: "fiti/22/004",
     image: null,
     fullname: "Genevieve Something",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-12-10",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
   {
     id: "fiti/22/005",
     image: null,
     fullname: "Paul Flyer",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-12-14",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
   {
     id: "fiti/22/006",
     image: null,
     fullname: "Peace Flyer",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-12-18",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
   {
     id: "fiti/22/007",
     image: null,
     fullname: "James Anderson",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-12-20",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
   {
     id: "fiti/22/008",
     image: null,
     fullname: "Johnson Grace",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-12-22",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
   {
     id: "fiti/22/009",
     image: null,
     fullname: "Perseus Jackson",
     course: "Web Design and Development",
-    status: "Passed",
     date: "2022-12-26",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
-    percentage: 70
   },
 ]
 
