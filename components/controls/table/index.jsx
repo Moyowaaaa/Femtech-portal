@@ -1,16 +1,12 @@
 import "regenerator-runtime/runtime";
 import React from "react";
 import {
-	useFilters,
-	useGlobalFilter,
 	usePagination,
 	useSortBy,
 	useTable,
 } from "react-table";
 
 import {
-	GlobalFilter,
-	GroupFilter,
 	SortIcon,
 	SortUpIcon,
 	SortDownIcon,
@@ -49,32 +45,14 @@ function Table({ className, columns = [], data = [] }) {
 		setPageSize,
 	} = useTable(
 		{ columns, data },
-		useFilters,
-		useGlobalFilter,
 		useSortBy,
 		usePagination
 	);
 
 	return (
 		<React.Fragment>
-		{/* Filters Start */}
-			<div className="gap-6 grid my-4 py-2 items-center sm:grid-cols-2 md:grid-cols-4">
-				<GlobalFilter
-					preGlobalFilteredRows={preGlobalFilteredRows}
-					globalFilter={state.globalFilter}
-					setGlobalFilter={setGlobalFilter}
-				/>
-
-				<GroupFilter 
-					headerGroups={headerGroups}
-					// headerKey="Header"
-					filterKey="Filter"
-				/>
-			</div>
-		{/* Filters Stop */}
-
 		{/* Table Start */}
-			<div className="flex flex-col mt-2">
+			<div className="flex flex-col max-h-[100vh] mt-2 overflow-y-auto">
 				<div 
 					className={classNames("border border-t-0 border-gray-200 overflow-x-auto pb-2 shadow sm:rounded-lg", className)}
 				>
@@ -99,12 +77,12 @@ function Table({ className, columns = [], data = [] }) {
 												<span>
 													{column.isSorted ? (
 														column.isSortedDesc ? (
-															<SortDownIcon className="w-4 h-4 text-gray-400" />
+															<SortDownIcon className="w-4 h-4 text-gray-200" />
 														) : (
-															<SortUpIcon className="w-4 h-4 text-gray-400" />
+															<SortUpIcon className="w-4 h-4 text-gray-100" />
 														)
 													) : (
-														<SortIcon className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100" />
+														<SortIcon className="w-4 h-4 text-gray-200 opacity-25 group-hover:opacity-100" />
 													)}
 												</span>
 											</div>
