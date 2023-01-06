@@ -4,13 +4,13 @@ import React from 'react'
 function AppSelect({ error, options, ...props }) {
 	return (
     <React.Fragment>
-	    <Select color="primary" required error={!!error} {...props}>
+	    <Select color="blue" required error={!!error} {...props}>
 	    	{options.map(({ title, value }, index) => (
 	      	<Option key={index} value={value}>{title}</Option>
 	    	))}
 	    </Select>
 			{error && (
-				<p className="font-secondary font-semibold italic mt-1 text-red-500 text-xs">
+				<p className="font-semibold italic mt-1 text-red-500 text-xs">
 					{error}
 				</p>
 			)}
