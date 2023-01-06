@@ -37,7 +37,7 @@ function useRegisterRequest({ onSuccess, onError }) {
         }
       })
       .catch((error) => {
-        onErrors([error?.message || "A server error occurred!"]);
+        onError([error?.message || "A server error occurred!"]);
       })
       .finally(() => {
         setLoading(false);
