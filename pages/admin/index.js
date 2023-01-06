@@ -149,7 +149,7 @@ function Dashboard() {
   );
 }
 
-Dashboard.authRequired = false;
+Dashboard.authRequired = true;
 Dashboard.adminAuth = true;
 
 export default Dashboard;
