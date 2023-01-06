@@ -1,4 +1,4 @@
-import { Bars3Icon, FolderArrowDownIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { FolderArrowDownIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import {
   Menu,
   MenuHandler,
@@ -50,7 +50,7 @@ function Dashboard() {
       {
         Header: "Date",
         accessor: "date",
-        Filter: (props) => <DateFilter filterState={{ filter, setFilter }} {...props} />
+        id: "date",
       },
       {
         Header: "Clocked In",
@@ -77,7 +77,26 @@ function Dashboard() {
     []
   );
 
-  const data = React.useMemo(() => globalData, [])
+  const data = React.useMemo(() => {
+    let currentData = globalData;
+    if (filter.from && filter.to) {
+      let from = new Date(filter.from).getTime()
+      let to = new Date(filter.to).getTime()
+
+      currentData = currentData.filter(item => {
+        const date = new Date(item.date).getTime();
+        if (date >= from && date <= to) return item
+      })
+    }
+    if (filter.search && filter.search.trim().length > 0) {
+      currentData = currentData.filter(item => {
+        const search = filter.search.toLowerCase();
+        const searchItem = item.fullname.toLowerCase() + " " + item.course.toLowerCase() + " " + item.id.toLowerCase()
+        return searchItem.includes(search)
+      })
+    }
+    return currentData
+  }, [filter])
 
   return (
     <div className="min-h-full">
@@ -107,6 +126,25 @@ function Dashboard() {
                   <MenuItem>Export as PDF</MenuItem>
                 </MenuList>
               </Menu>
+            </div>
+          </div>
+
+          <div className="gap-6 grid my-4 py-2 items-center sm:grid-cols-2 md:grid-cols-4">
+            <div className="w-full md:col-span-2">
+              <Input
+                value={filter.search}
+                icon={<MagnifyingGlassIcon />}
+                onChange={(e) => {
+                  setFilter(prevState => ({
+                    ...prevState,
+                    search: e.target.value
+                  }))
+                }}
+                label="Search..."
+              />
+            </div>
+            <div className="w-full">
+              <DateFilter filter={filter} setFilter={setFilter} />
             </div>
           </div>
 
@@ -140,7 +178,7 @@ const globalData = [
     fullname: "Anna Dey Johnson",
     course: "Web Design and Development",
     status: "Passed",
-    date: "2022-11-20",
+    date: "2022-11-24",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
     percentage: 70
@@ -151,7 +189,7 @@ const globalData = [
     fullname: "Jeremiah Ismael",
     course: "Web Design and Development",
     status: "Passed",
-    date: "2022-11-20",
+    date: "2022-11-28",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
     percentage: 70
@@ -162,7 +200,7 @@ const globalData = [
     fullname: "Genevieve Something",
     course: "Web Design and Development",
     status: "Passed",
-    date: "2022-11-20",
+    date: "2022-12-10",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
     percentage: 70
@@ -173,14 +211,58 @@ const globalData = [
     fullname: "Paul Flyer",
     course: "Web Design and Development",
     status: "Passed",
-    date: "2022-11-20",
+    date: "2022-12-14",
+    clockIn: "8:03:00 AM",
+    clockOut: "8:03:00 AM",
+    percentage: 70
+  },
+  {
+    id: "fiti/22/006",
+    image: null,
+    fullname: "Peace Flyer",
+    course: "Web Design and Development",
+    status: "Passed",
+    date: "2022-12-18",
+    clockIn: "8:03:00 AM",
+    clockOut: "8:03:00 AM",
+    percentage: 70
+  },
+  {
+    id: "fiti/22/007",
+    image: null,
+    fullname: "James Anderson",
+    course: "Web Design and Development",
+    status: "Passed",
+    date: "2022-12-20",
+    clockIn: "8:03:00 AM",
+    clockOut: "8:03:00 AM",
+    percentage: 70
+  },
+  {
+    id: "fiti/22/008",
+    image: null,
+    fullname: "Johnson Grace",
+    course: "Web Design and Development",
+    status: "Passed",
+    date: "2022-12-22",
+    clockIn: "8:03:00 AM",
+    clockOut: "8:03:00 AM",
+    percentage: 70
+  },
+  {
+    id: "fiti/22/009",
+    image: null,
+    fullname: "Perseus Jackson",
+    course: "Web Design and Development",
+    status: "Passed",
+    date: "2022-12-26",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
     percentage: 70
   },
 ]
 
-function DateFilter({ filterState: { filter, setFilter }, ...props}) {
+function DateFilter({ filter, setFilter }) {
   const { buttonRef, ref, visible, setVisible } = useOutClick();
   const [value, setValue] = React.useState("");
 
