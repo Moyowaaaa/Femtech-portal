@@ -7,6 +7,7 @@ import {
   Button,
 } from "@material-tailwind/react";
 import React from "react";
+import * as XLSX from "xlsx";
 
 import Topbar from "../../components/admin/Topbar";
 import { Input, Select, Table } from "../../components/controls";
@@ -90,6 +91,16 @@ function Dashboard() {
     return currentData
   }, [filter])
 
+  const handleExport = React.useCallback(() => {
+    const excelHeaders = columns.map(column => column.Header);
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data)
+
+    XLSX.utils.book_append_sheet(wb, ws, "Attendance Sheet 1");
+    XLSX.writeFile(wb, "Attendance.xlsx")
+  }, [columns, data])
+
   return (
     <div className="min-h-full">
       <Topbar />
@@ -105,19 +116,10 @@ function Dashboard() {
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <div className="flex justify-end items-center my-4 py-2 md:py-3 lg:pt-4">
             <div className="w-[12rem]">
-              <Menu placement="bottom-end">
-                <MenuHandler>
-                  <Button className="flex items-center justify-center" color="blue" fullWidth>
-                    <FolderArrowDownIcon className="h-5 mr-2 text-gray-100 w-5" />
-                    <span className="capitalize text-gray-100">Export</span>
-                  </Button> 
-                </MenuHandler>
-                <MenuList>
-                  <MenuItem>Export as CSV</MenuItem>
-                  <MenuItem>Export as Excel</MenuItem>
-                  <MenuItem>Export as PDF</MenuItem>
-                </MenuList>
-              </Menu>
+              <Button onClick={handleExport} className="flex items-center justify-center" color="blue" fullWidth>
+                <FolderArrowDownIcon className="h-5 mr-2 text-gray-100 w-5" />
+                <span className="capitalize text-gray-100">Export</span>
+              </Button> 
             </div>
           </div>
 
