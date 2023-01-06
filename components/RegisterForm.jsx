@@ -10,10 +10,10 @@ import {
 } from "react-icons/fa";
 
 import { Input } from "./controls";
-import { LOGIN_PAGE } from "../config";
+import { ADMIN_LOGIN_PAGE, LOGIN_PAGE } from "../config";
 import logo from "../images/logo.svg";
 
-function Register({ form, onChange, loading, onSubmit }) {
+function Register({ admin = false, form, onChange, loading, onSubmit }) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   return (
@@ -29,7 +29,7 @@ function Register({ form, onChange, loading, onSubmit }) {
             />
           </div>
           <h2 className="italic mt-3 text-center text-base tracking-tight font-bold sm:text-lg text-primary-600 md:text-xl lg:text-2xl">
-            Sign Up
+            {admin ? "Register Admin Account" : "Sign Up"}
           </h2>
         </div>
         <form
@@ -55,7 +55,7 @@ function Register({ form, onChange, loading, onSubmit }) {
             <div className="my-4">
               <Input
                 disabled={loading}
-                label="Student/User ID"
+                label={admin ? "Admin/User ID" : "Student/User ID"}
                 icon={<FaIdBadge />}
                 onChange={onChange}
                 required
@@ -90,9 +90,9 @@ function Register({ form, onChange, loading, onSubmit }) {
           </div>
 
           <div className="flex items-center justify-end">
-            <Link href={LOGIN_PAGE}>
+            <Link href={admin ? ADMIN_LOGIN_PAGE : LOGIN_PAGE}>
               <a className="align-baseline capitalize cursor-pointer font-bold inline-block text-primary-600 text-sm hover:text-primary-600 hover:underline">
-                Sign In
+                {admin ? "Login Admin Account" : "Sign In"}
               </a>
             </Link>
           </div>
@@ -105,7 +105,7 @@ function Register({ form, onChange, loading, onSubmit }) {
               variant="gradient"
               type="submit"
             >
-              {loading ? "Signing Up ..." : "Sign Up"}
+              {loading ? "Please Wait..." : "Sign Up"}
             </Button>
           </div>
         </form>
