@@ -20,6 +20,7 @@ function useRegisterRequest({ onSuccess, onError }) {
       body: JSON.stringify({
         ...form,
         fullname: form.full_name,
+        password_confirmation: form.password,
         user_id: form.user_id.toUpperCase(), // force the ID to uppercase
       }),
     })
