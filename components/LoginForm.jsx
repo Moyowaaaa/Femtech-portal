@@ -5,15 +5,14 @@ import React from "react";
 import {
   FaIdBadge,
   FaLock,
-  FaExclamationCircle,
   FaUnlock,
 } from "react-icons/fa";
 
 import { Input } from "./controls";
-import { REGISTER_PAGE } from "../config";
+import { ADMIN_REGISTER_PAGE, REGISTER_PAGE } from "../config";
 import logo from "../images/logo.svg";
 
-function Register({ form, onChange, loading, onSubmit }) {
+function Login({ admin = false, form, onChange, loading, onSubmit }) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   return (
@@ -29,7 +28,7 @@ function Register({ form, onChange, loading, onSubmit }) {
             />
           </div>
           <h2 className="italic mt-3 text-center text-base tracking-tight font-bold sm:text-lg text-primary-600 md:text-xl lg:text-2xl">
-            Sign In
+            {admin ? "Login Admin Account" : "Sign In"}
           </h2>
         </div>
         <form
@@ -44,7 +43,7 @@ function Register({ form, onChange, loading, onSubmit }) {
             <div className="my-4">
               <Input
                 disabled={loading}
-                label="Student/User ID"
+                label={admin ? "Admin/User ID" : "Student/User ID"}
                 icon={<FaIdBadge />}
                 onChange={onChange}
                 required
@@ -79,9 +78,9 @@ function Register({ form, onChange, loading, onSubmit }) {
           </div>
 
           <div className="flex items-center justify-end">
-            <Link href={REGISTER_PAGE}>
+            <Link href={admin ? ADMIN_REGISTER_PAGE : REGISTER_PAGE}>
               <a className="align-baseline capitalize cursor-pointer font-bold inline-block text-primary-600 text-sm hover:text-primary-600 hover:underline">
-                Register
+                {admin ? "Register Admin Account" : "Register"}
               </a>
             </Link>
           </div>
@@ -94,7 +93,7 @@ function Register({ form, onChange, loading, onSubmit }) {
               variant="gradient"
               type="submit"
             >
-              {loading ? "Signing In ..." : "Sign In"}
+              {loading ? "Please Wait..." : "Sign In"}
             </Button>
           </div>
         </form>
@@ -103,113 +102,4 @@ function Register({ form, onChange, loading, onSubmit }) {
   );
 }
 
-export default Register;
-
-// import React from 'react'
-
-// const RegisterForm = () => {
-//   return (
-//     <div className='flex flex-col gap-4 w-8/12 py-2 h-4/6 bg-[#3041DC] rounded-lg text-white px-6'>
-
-//       <div className='h-full w-full flex flex-col justify-center'>
-//       <label>Full name</label>
-//         <input
-//         type='text'
-//         className="w-full p-2 outline-none border-2 border-[#3041DC] rounded-md"
-//         />
-
-//       <label>Student ID</label>
-//         <input
-//         type='text'
-//         className="w-full p-2 outline-none border-2 border-[#3041DC] rounded-md"
-//         />
-
-// <label>Course</label>
-//         <input
-//         type='text'
-//         className="w-full p-2 outline-none border-2 border-[#3041DC] rounded-md"
-//         />
-
-// <label>Password</label>
-//         <input
-//         type='password'
-//         className="w-full p-2 outline-none border-2 border-[#3041DC] rounded-md"
-//         />
-
-//         <button className='bg-[#187DF3] text-white py-2 px-9 flex items-center mx-auto mt-[3rem] rounded-md shadow-md'>Register</button>
-
-//       </div>
-
-//     </div>
-//   )
-// }
-
-// export default RegisterForm
-
-
-// import Link from "next/link";
-// import React from "react";
-
-// import { REGISTER_PAGE } from '../config';
-
-// const LoginForm = ({ loading, onSubmit, form, onChange, errors }) => {
-//   return (
-//     <form 
-//       onSubmit={(e) => {
-//         e.preventDefault()
-//         onSubmit(form);
-//       }}
-//       className="flex flex-col gap-4 w-8/12 py-2 h-4/6 bg-[#3041DC] rounded-lg text-white px-6"
-//     >
-//       <h1>Good Morning Techy!</h1>
-//       <div className="h-full w-full flex flex-col justify-center">
-//         <div className="mb-3">
-//           <label>Student ID</label>
-//           <input
-//             disabled={loading}
-//             type="text"
-//             className="text-gray-700 w-full p-2 outline-none border-2 border-[#3041DC] rounded-md"
-//             onChange={onChange}
-//             name="studentId"
-//             value={form?.studentId || ""}
-//           />
-
-//           {errors?.studentId && (
-//             <p className="mt-1 text-sm text-red-300">{errors.studentId}</p>
-//           )}
-//         </div>
-
-//         <div className="mb-3">
-//           <label>Password</label>
-//           <input
-//             disabled={loading}
-//             type="password"
-//             className="text-gray-700 w-full p-2 outline-none border-2 border-[#3041DC] rounded-md"
-//             onChange={onChange}
-//             name="password"
-//             value={form?.password || ""}
-//           />
-//           {errors?.password && (
-//             <p className="mt-1 text-sm text-red-300">{errors.password}</p>
-//           )}
-//         </div>
-
-//         <div className="w-full  my-4 flex justify-center">
-//           <button 
-//             className={`${loading ? 'cursor-not-allowed' : 'cursor-pointer'} bg-[#187DF3] text-white py-2 px-9 flex items-center w-max rounded-md shadow-md`}
-//             disabled={loading}
-//             type="submit"
-//           >
-//             {loading ? 'Signing In...' : 'Sign In'}
-//           </button>
-//         </div>
-
-//         <div className="flex justify-end">
-//           <Link href={REGISTER_PAGE}>Register</Link>
-//         </div>
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default LoginForm;
+export default Login;
