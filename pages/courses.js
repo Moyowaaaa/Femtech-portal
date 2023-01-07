@@ -55,12 +55,8 @@ function Courses() {
 						.sort((a, b) => {
 							let x = a.course.toLowerCase();
 							let y = b.course.toLowerCase();
-							if (x < y) {
-								return -1;
-							}
-							if (x > y) {
-								return 1;
-							}
+							if (x < y) return -1;
+							if (x > y) return 1;
 							return 0;
 						})
 						.map(({ id, course: name }, index) => (
@@ -77,7 +73,7 @@ function Courses() {
 										>
 											{name[0].toUpperCase()}
 										</span>
-										<p className="font-semibold ml-1 text-gray-700 text-sm tracking-wider md:text-base">
+										<p className="capitalize font-semibold ml-1 text-gray-700 text-sm tracking-wider md:text-base">
 											{name}
 										</p>
 									</div>
