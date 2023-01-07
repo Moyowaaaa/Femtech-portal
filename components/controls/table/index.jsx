@@ -44,7 +44,7 @@ function Table({ className, columns = [], data = [] }) {
 		previousPage,
 		setPageSize,
 	} = useTable(
-		{ columns, data },
+		{ columns, data, defaultPageSize: 50, minRow: 50 },
 		useSortBy,
 		usePagination
 	);

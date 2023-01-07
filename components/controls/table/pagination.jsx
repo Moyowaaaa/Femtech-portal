@@ -41,7 +41,7 @@ function Pagination({
 							color="yellow"
 							label="Page Size"
 							onChange={(value) => setPageSize(Number(value))}
-							options={[5, 10, 20].map(pageSize => ({
+							options={[5, 10, 20, 50, 100, 200, 500, 1000].map(pageSize => ({
 								title: `Show ${pageSize}`, value: String(pageSize)
 							}))}
 							size="md"
