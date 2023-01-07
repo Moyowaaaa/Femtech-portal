@@ -10,6 +10,7 @@ import {
   ATTENDANCE_SUCCESSFULL_PAGE,
   CLOCK_IN_URL,
   CLOCK_OUT_URL,
+  COURSE_DURATION_URL,
   GET_ALL_ATTENDANCE_URL,
   GET_PRESENT_ATTENDANCE_URL,
 } from "../../config";
@@ -55,16 +56,12 @@ function Chart({ signIn, total }) {
       legend: {
         display: true,
       },
-    },
-    // maintainAspectRatio: false,
-    // responsive: true,
+    }
   };
   return (
     <Pie
       data={data}
       options={options}
-      // height={150}
-      // width={150}
     />
   );
 }
@@ -94,6 +91,7 @@ const Attendance = ({ courseId }) => {
     return 0;
   }, [attendData]);
 
+  const { loading: durationLoading, duration } = useGetCourseDuration()
   const { refetch, loading, attendance } = useGetAttendance({
     courseId,
   });
@@ -130,7 +128,7 @@ const Attendance = ({ courseId }) => {
         </h1>
         <div className="flex justify-center mt-5">
           <div className="h-full w-[200px]">
-            {attendLoading ? (
+            {attendLoading || durationLoading ? (
               <>
                 <div className="flex items-center justify-center my-4">
                   <div className="w-40 h-40 border-l-2 border-blue-900 rounded-full animate-spin"></div>
@@ -141,10 +139,10 @@ const Attendance = ({ courseId }) => {
               </>
             ) : (
               <div>
-                <Chart signIn={totalAttendanceCount} total={48} />
+                <Chart signIn={totalAttendanceCount} total={duration} />
                 <p className="font-bold mt-2 text-center text-blue-700">
-                  Percentage: {(totalAttendanceCount > 0
-                    ? Math.round((totalAttendanceCount / 48) * 100)
+                  Percentage: {(totalAttendanceCount > 0 && !isNaN(duration) && duration > 0
+                    ? Math.round((totalAttendanceCount / duration) * 100)
                     : 0) + "%"}
                 </p>
               </div>
@@ -290,15 +288,17 @@ function useClockOut({ courseId, onSuccess, onError }) {
   };
 }
 
-function useGetCourseDuration({ courseId }) {
+function useGetCourseDuration() {
   const [duration, setDuration] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
 
   const { data } = useAuthContext();
 
+  const { query } = useRouter();
+
   const getCourseDuration = React.useCallback(() => {
     setLoading(true);
-    fetch(GET_PRESENT_ATTENDANCE_URL(courseId), {
+    fetch(COURSE_DURATION_URL(query.originalCourseId || ""), {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -309,8 +309,8 @@ function useGetCourseDuration({ courseId }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (Array.isArray(data) && data[0] !== undefined) {
-          setDuration(data[0]);
+        if (data.message) {
+          setDuration(data.message);
         } else {
           toast.warning("Unable to get information about this course!");
         }
@@ -321,7 +321,7 @@ function useGetCourseDuration({ courseId }) {
       .finally(() => {
         setLoading(false);
       });
-  }, [data, courseId]);
+  }, [data, query]);
 
   React.useEffect(() => {
     getCourseDuration();

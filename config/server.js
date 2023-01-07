@@ -18,6 +18,8 @@ export const REGISTER_COURSE_URL = (id) => BASE_URL + `/user/add_course/${id}`;
 
 export const COURSES_URL = BASE_URL + '/user/courses';
 
+export const COURSE_DURATION_URL = (id) => BASE_URL + '/user/course_duration/' + id
+
 export const USER_COURSES_URL = BASE_URL + '/user/user_course';
 
 export const LOGIN_URL = BASE_URL + '/user/login';
