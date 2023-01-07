@@ -136,7 +136,6 @@ function Dashboard() {
             </div>
           </div>
 
-          {/*{loading && (!data || !Array.isArray(data) || data.length <= 0) ? (*/}
           {loading ? (
             <>
               <div className="flex items-center justify-center my-6 py-6">
