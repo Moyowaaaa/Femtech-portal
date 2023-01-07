@@ -23,17 +23,22 @@ function Courses() {
 		loading: userCoursesLoading,
 		refetch,
 	} = useGetUserCourses();
-	const { courses, loading } = useGetAllCourses();
+	const { courses: allCourses, loading } = useGetAllCourses();
 
 	const [open, setOpen] = React.useState(false);
+
+	const courses = React.useMemo(() => {
+		const courseNames = userCourses.map(item => item.course);
+		return allCourses.filter((item) => !courseNames.includes(item.name))
+	}, [allCourses, userCourses])
 
 	return (
 		<React.Fragment>
 			<div className="w-6/12 px-5">
 				<div className="mb-4">
 					<Button
-						disabled={loading}
-						color={loading ? "gray" : "blue"}
+						disabled={loading || userCoursesLoading}
+						color={loading || userCoursesLoading ? "gray" : "blue"}
 						onClick={() => setOpen(true)}
 					>
 						<span>

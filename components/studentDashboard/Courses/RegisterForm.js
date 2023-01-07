@@ -136,7 +136,7 @@ function RegisterForm({ open, setOpen, courses = [], onRegisterSuccess }) {
 													selectedCourse && course.id === selectedCourse.id
 														? "font-semibold"
 														: "font-normal"
-												} ml-3 block truncate`}
+												} capitalize ml-3 block truncate`}
 											>
 												{course.name}
 											</span>
@@ -172,7 +172,7 @@ function RegisterForm({ open, setOpen, courses = [], onRegisterSuccess }) {
 									>
 										{selectedCourse.name[0].toUpperCase()}
 									</span>
-									<p className="font-semibold ml-1 text-gray-700 text-sm tracking-wider md:text-base">
+									<p className="capitalize font-semibold ml-1 text-gray-700 text-sm tracking-wider md:text-base">
 										{selectedCourse.name}
 									</p>
 								</div>
