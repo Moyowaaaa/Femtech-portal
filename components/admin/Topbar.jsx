@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment } from "react";
+import React from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -15,15 +15,14 @@ function classNames(...classes) {
 }
 
 function Topbar() {
-	const user = {
-		name: "Admin",
-		email: "fiti/admin/22/001",
-	};
+	const router = useRouter()
 
-	const { pathname } = useRouter()
+	const pathname = React.useMemo(() => {
+		if (router.pathname[router.pathname.length - 1] === "/") return router.pathname;
+		return router.pathname + "/"
+	}, [router.pathname])
 
-	const { logout } = useAdminAuthContext();
-
+	const { data, logout } = useAdminAuthContext();
 
 	const navigation = [
 		{ name: "Attendance", href: ADMIN_DASHBOARD_PAGE, current: pathname === ADMIN_DASHBOARD_PAGE },
@@ -75,7 +74,7 @@ function Topbar() {
 											</Menu.Button>
 										</div>
 										<Transition
-											as={Fragment}
+											as={React.Fragment}
 											enter="transition ease-out duration-100"
 											enterFrom="transform opacity-0 scale-95"
 											enterTo="transform opacity-100 scale-100"
@@ -146,10 +145,7 @@ function Topbar() {
 								</div>
 								<div className="ml-3">
 									<div className="text-base font-medium leading-none text-white">
-										{user.name}
-									</div>
-									<div className="text-sm font-medium leading-none text-gray-400">
-										{user.email}
+										{data.user.fullname}
 									</div>
 								</div>
 							</div>
