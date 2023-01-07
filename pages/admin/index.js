@@ -1,4 +1,4 @@
-import { FolderArrowDownIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { ArrowPathIcon, FolderArrowDownIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import {
   Menu,
   MenuHandler,
@@ -7,26 +7,41 @@ import {
   Button,
 } from "@material-tailwind/react";
 import React from "react";
+import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
 
 import Topbar from "../../components/admin/Topbar";
 import { Input, Select, Table } from "../../components/controls";
 import { AvatarIdCell } from "../../components/controls/table/cells"
+import { ADMIN_ATTENDANCE_URL } from "../../config";
 import { useOutClick } from "../../hooks";
+import { useAdminAuthContext } from "../../store/contexts";
 import { getNextDate } from "../../utils";
 
 const tdClassName =
   "border-b border-gray-200 font-medium p-4 text-left text-gray-800";
 const thClassName = "border-b font-bold p-4 text-gray-100 text-left uppercase";
 
+const currentDate = new Date();
+
 const defaultFilterValue = {
   search: "",
-  from: "",
-  to: "",
+  from: currentDate.toLocaleDateString('en-Ca'),
+  to: getNextDate(currentDate, 1, true),
 };
 
 function Dashboard() {
   const [filter, setFilter] = React.useState(defaultFilterValue);
+
+  const { attendance = [], loading, refetch } = useGetAttendance();
+
+  const getAttendance = React.useCallback(() => {
+    refetch({ from: filter.from.replaceAll('-', '/'), to: filter.to.replaceAll('-', '/') })
+  }, [filter.from, filter.date, refetch])
+
+  React.useEffect(() => {
+    getAttendance()
+  }, [getAttendance])
 
   const handleChange = React.useCallback(({ target: { name, value } }) => {
     setFilter((prevState) => ({
@@ -115,6 +130,12 @@ function Dashboard() {
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <div className="flex justify-end items-center my-4 py-2 md:py-3 lg:pt-4">
+            <div className="mr-6 w-[12rem]">
+              <Button onClick={getAttendance} className="flex items-center justify-center" color="green" fullWidth>
+                <ArrowPathIcon className="h-5 mr-2 text-gray-100 w-5" />
+                <span className="capitalize text-gray-100">Refetch</span>
+              </Button> 
+            </div>
             <div className="w-[12rem]">
               <Button onClick={handleExport} className="flex items-center justify-center" color="blue" fullWidth>
                 <FolderArrowDownIcon className="h-5 mr-2 text-gray-100 w-5" />
@@ -142,14 +163,72 @@ function Dashboard() {
             </div>
           </div>
 
-          <Table columns={columns} data={data} />
+          {/*{loading && (!data || !Array.isArray(data) || data.length <= 0) ? (*/}
+          {loading ? (
+            <>
+             <div className="flex items-center justify-center my-6 py-6">
+                <div className="w-24 h-24 border-l-2 border-r-2 border-blue-900 rounded-full animate-spin"></div>
+              </div>
+              <p className="font-bold my-3 text-center text-blue-700">
+                Loading Attendance Data...
+              </p>
+            </>
+          ) : (
+            <Table columns={columns} data={data} />
+          )}
         </div>
       </main>
     </div>
   );
 }
 
-Dashboard.authRequired = true;
+function useGetAttendance() {
+  const [attendance, setAttendance] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  const { data } = useAdminAuthContext();
+
+  const getAttendance = React.useCallback((query) => {
+    setLoading(true);
+    fetch(ADMIN_ATTENDANCE_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + data?.token,
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(query)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data?.status_code === 201) {
+          if (Array.isArray(data.message) && data.message.length > 0)
+            setAttendance(data.message);
+        } else {
+          toast.error("An error occurred!");
+        }
+      })
+      .catch((error) => {
+        toast.error("A server error occurred!");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [data]);
+
+  // React.useEffect(() => {
+  //   getAttendance(query);
+  // }, [getAttendance, query]);
+
+  return {
+    attendance,
+    loading,
+    refetch: getAttendance,
+  };
+}
+
+Dashboard.authRequired = false;
 Dashboard.adminAuth = true;
 
 export default Dashboard;
@@ -160,7 +239,7 @@ const globalData = [
     image: null,
     fullname: "John Doe",
     course: "Web Design and Development",
-    date: "2022-11-20",
+    date: "2023-01-07",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
   },
@@ -169,7 +248,7 @@ const globalData = [
     image: null,
     fullname: "Anna Dey Johnson",
     course: "Web Design and Development",
-    date: "2022-11-24",
+    date: "2023-01-07",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
   },
@@ -178,7 +257,7 @@ const globalData = [
     image: null,
     fullname: "Jeremiah Ismael",
     course: "Web Design and Development",
-    date: "2022-11-28",
+    date: "2023-01-06",
     clockIn: "8:03:00 AM",
     clockOut: "8:03:00 AM",
   },
@@ -240,10 +319,10 @@ const globalData = [
 
 function DateFilter({ filter, setFilter }) {
   const { buttonRef, ref, visible, setVisible } = useOutClick();
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState("1");
 
-  const [from, setFrom] = React.useState(filter.from || "");
-  const [to, setTo] = React.useState(filter.to || "")
+  const [from, setFrom] = React.useState(filter.from || defaultFilterValue.from);
+  const [to, setTo] = React.useState(filter.to || defaultFilterValue.to)
 
   const handleChange = React.useCallback(
     (option) => {
@@ -253,13 +332,13 @@ function DateFilter({ filter, setFilter }) {
         if (visible) setVisible(false);
         setFilter((prevState) => ({
           ...prevState,
-          from: "",
-          to: "",
+          from: defaultFilterValue.from,
+          to: defaultFilterValue.to
         }));
-        setFrom(""); setTo("");
+        setFrom(defaultFilterValue.from); setTo(defaultFilterValue.to);
       } else {
         if (visible) setVisible(false);
-        const to = new Date();
+        const to = getNextDate(new Date(), 1, false);
         const from = getNextDate(to, -1 * Number(option), true); // get the previous date
 
         setFilter((prevState) => ({
@@ -281,11 +360,11 @@ function DateFilter({ filter, setFilter }) {
           label="Date"
           onChange={handleChange}
           options={[
-            { title: "All", value: "" },
             { title: "Today", value: "1" },
             { title: "Last 7 days", value: "7" },
             { title: "Last 30 days", value: "30" },
             { title: "Last 90 days", value: "90" },
+            { title: "Last 180 days", value: "180"},
             { title: "Custom Date", value: "custom" },
           ]}
           value={value}

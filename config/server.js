@@ -1,5 +1,7 @@
 const BASE_URL = 'http://localhost:8000/api'
 
+export const ADMIN_ATTENDANCE_URL = BASE_URL + '/admin/attendance';
+
 export const ADMIN_REGISTER_URL = BASE_URL + '/admin/register';
 
 export const ADMIN_LOGIN_URL = BASE_URL + '/admin/login';
