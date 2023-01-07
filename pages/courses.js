@@ -42,13 +42,13 @@ function Courses() {
 						onClick={() => setOpen(true)}
 					>
 						<span>
-							{loading
+							{loading || userCoursesLoading
 								? "Loading Courses. Please Wait"
 								: "Register a new course"}
 						</span>
 					</Button>
 				</div>
-				{userCoursesLoading ? 
+				{userCoursesLoading || loading ? 
 					<React.Fragment>Loading Courses ...</React.Fragment>
 				 : userCourses.length <= 0 ? (
 					<React.Fragment>
