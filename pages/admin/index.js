@@ -43,7 +43,7 @@ function Dashboard() {
       from_d: filter.from.replaceAll("-", "/"),
       to_d: filter.to.replaceAll("-", "/"),
     });
-  }, [filter.from, filter.date, refetch]);
+  }, [filter.from, filter.to, refetch]);
 
   React.useEffect(() => {
     getAttendance();
