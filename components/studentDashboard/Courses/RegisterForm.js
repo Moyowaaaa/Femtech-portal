@@ -15,20 +15,27 @@ import { useAuthContext } from "../../../store/contexts";
 function RegisterForm({ open, setOpen, courses = [], onRegisterSuccess }) {
 	const [selectOpen, setSelectOpen] = React.useState(false);
 	const [selectedCourse, setSelectedCourse] = React.useState(null);
-	const [search, setSearch] = React.useState("")
+	const [search, setSearch] = React.useState("");
 
 	// Represents the filtered courses by search input
 	const filCourses = React.useMemo(() => {
 		if (Array.isArray(courses)) {
-			const filSearch = search.toLowerCase().trim()
-			if (filSearch === "") return courses
-			return courses.filter(course => {
+			const filSearch = search.toLowerCase().trim();
+			const sortedCourses = courses.sort((a, b) => {
+				let x = a.name.toLowerCase();
+				let y = b.name.toLowerCase();
+				if (x < y) return -1;
+				if (x > y) return 1;
+				return 0;
+			});
+			if (filSearch === "") return sortedCourses;
+			return sortedCourses.filter((course) => {
 				const name = course.name.toLowerCase();
-				if (name.includes(filSearch)) return course
-			})	
+				if (name.includes(filSearch)) return course;
+			});
 		}
-		return []
-	}, [courses, search])
+		return [];
+	}, [courses, search]);
 
 	const { loading, register } = useRegisterCourseRequest({
 		onSuccess: () => {
@@ -42,15 +49,19 @@ function RegisterForm({ open, setOpen, courses = [], onRegisterSuccess }) {
 	});
 
 	return (
-		<Dialog size="lg" open={open} handler={() => setOpen(prevState => !prevState)}>
+		<Dialog
+			size="lg"
+			open={open}
+			handler={() => setOpen((prevState) => !prevState)}
+		>
 			<DialogHeader>Register a new course</DialogHeader>
 			<DialogBody divider>
 				<div className="h-full min-h-[15rem] pb-[8rem] w-full">
 					<div className="mb-4">
-						<Input 
+						<Input
 							label="Search for a course"
 							onFocus={() => setSelectOpen(true)}
-							onChange={({target:{value}}) => setSearch(value)}
+							onChange={({ target: { value } }) => setSearch(value)}
 							value={search}
 						/>
 					</div>
@@ -175,11 +186,15 @@ function RegisterForm({ open, setOpen, courses = [], onRegisterSuccess }) {
 					disabled={loading}
 					variant="text"
 					color="red"
-					onClick={!loading ? () => {
-						setSelectOpen(false)
-						setSelectedCourse(null)
-						setSearch("")
-					} : undefined}
+					onClick={
+						!loading
+							? () => {
+									setSelectOpen(false);
+									setSelectedCourse(null);
+									setSearch("");
+							  }
+							: undefined
+					}
 					className="mr-1"
 				>
 					<span>Cancel</span>
