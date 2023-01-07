@@ -44,7 +44,7 @@ function Chart({ signIn, total }) {
     datasets: [
       {
         label: "My First Dataset",
-        data: [signIn, total - signIn],
+        data: [signIn, total - signIn >= 0 ? total - signIn : 0],
         backgroundColor: ["#008000", "#ff0000"],
         hoverOffset: 4,
       },
@@ -77,6 +77,7 @@ const Attendance = ({ courseId }) => {
   const {
     refetch: refetchAllAttendance,
     attendance: attendData,
+    loading: attendLoading,
   } = useGetAllAttendance({
     courseId
   });
@@ -130,7 +131,22 @@ const Attendance = ({ courseId }) => {
         </h1>
         <div className="flex justify-center mt-5">
           <div className="h-full w-[250px]">
-            <Chart signIn={totalAttendanceCount} total={48} />
+            {attendLoading ? (
+              <>
+                <div className="flex items-center justify-center my-4">
+                  <div className="w-40 h-40 border-l-2 border-blue-900 rounded-full animate-spin"></div>
+                </div>
+                <p className="font-bold my-3 text-center text-blue-700">Loading Chart Data...</p>
+              </>
+            )
+             : (
+              <div>
+                <Chart signIn={totalAttendanceCount} total={48} />
+                <p className="font-bold my-3 text-center text-blue-700">
+                  {totalAttendanceCount > 0 ? Math.round((totalAttendanceCount / 48) * 100) : 0 + "%"}
+                </p>
+              </div>
+              )}
           </div>
         </div>
 
@@ -269,6 +285,50 @@ function useClockOut({ courseId, onSuccess, onError }) {
   return {
     clockOut,
     loading,
+  };
+}
+
+function useGetCourseDuration({ courseId }) {
+  const [duration, setDuration] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
+
+  const { data } = useAuthContext();
+
+  const getCourseDuration = React.useCallback(() => {
+    setLoading(true);
+    fetch(GET_PRESENT_ATTENDANCE_URL(courseId), {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + data?.token,
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data) && data[0] !== undefined) {
+          setDuration(data[0]);
+        } else {
+          toast.warning("Unable to get information about this course!");
+        }
+      })
+      .catch((error) => {
+        toast.error("A server error occurred!");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [data, courseId]);
+
+  React.useEffect(() => {
+    getCourseDuration();
+  }, [getCourseDuration]);
+
+  return {
+    duration,
+    loading,
+    refetch: getCourseDuration,
   };
 }
 
