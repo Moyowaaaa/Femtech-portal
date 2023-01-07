@@ -5,7 +5,7 @@ import eventImage from '../../images/event.svg'
 const Events = () => {
   return (
     <div className='w-full flex flex-col'>
-        
+        {/*
         <h1 className='text-[#187DF3] font-bold text-2xl'>Events</h1>
 
         <div className='shadow rounded-md  w-full  py-2 px-2 gap-2 flex items-center my-2'>
@@ -20,7 +20,7 @@ const Events = () => {
             <Image src={eventImage} />
         </div>
         <p>Project presentation and technpreneurshp....</p>
-        </div>
+        </div>*/}
 
         
         </div>
