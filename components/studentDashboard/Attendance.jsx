@@ -1,5 +1,5 @@
 import { Button } from "@material-tailwind/react";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import React from "react";
 import { Pie } from "react-chartjs-2";
 import { toast } from "react-toastify";
@@ -38,7 +38,6 @@ ChartJS.register(
 );
 
 function Chart({ signIn, total }) {
-
   const data = {
     labels: ["Green", "Red"],
     datasets: [
@@ -79,7 +78,7 @@ const Attendance = ({ courseId }) => {
     attendance: attendData,
     loading: attendLoading,
   } = useGetAllAttendance({
-    courseId
+    courseId,
   });
 
   const totalAttendanceCount = React.useMemo(() => {
@@ -88,15 +87,15 @@ const Attendance = ({ courseId }) => {
         if (currentAttendance.signIn_time && currentAttendance.signOut_time) {
           return totalCount + 1;
         }
-        return totalCount
-      }, 0)
-      return count
+        return totalCount;
+      }, 0);
+      return count;
     }
-    return 0
-  }, [attendData])
+    return 0;
+  }, [attendData]);
 
   const { refetch, loading, attendance } = useGetAttendance({
-    courseId
+    courseId,
   });
   const { clockIn, loading: clockInLoading } = useClockIn({
     courseId,
@@ -104,11 +103,11 @@ const Attendance = ({ courseId }) => {
       refetch();
       refetchAllAttendance();
       toast.success("Clocked in successfully!");
-      router.push(ATTENDANCE_SUCCESSFUL_PAGE)
+      router.push(ATTENDANCE_SUCCESSFUL_PAGE);
     },
     onError() {
-      router.push(ATTENDANCE_FAILED_PAGE)
-    }
+      router.push(ATTENDANCE_FAILED_PAGE);
+    },
   });
   const { clockOut, loading: clockOutLoading } = useClockOut({
     courseId,
@@ -116,11 +115,11 @@ const Attendance = ({ courseId }) => {
       refetch();
       refetchAllAttendance();
       toast.success("Clocked out successfully!");
-      router.push(ATTENDANCE_SUCCESSFULL_PAGE)
+      router.push(ATTENDANCE_SUCCESSFULL_PAGE);
     },
     onError() {
-      router.push(ATTENDANCE_FAILED_PAGE)
-    }
+      router.push(ATTENDANCE_FAILED_PAGE);
+    },
   });
 
   return (
@@ -130,28 +129,31 @@ const Attendance = ({ courseId }) => {
           Attendance Insight
         </h1>
         <div className="flex justify-center mt-5">
-          <div className="h-full w-[250px]">
+          <div className="h-full w-[200px]">
             {attendLoading ? (
               <>
                 <div className="flex items-center justify-center my-4">
                   <div className="w-40 h-40 border-l-2 border-blue-900 rounded-full animate-spin"></div>
                 </div>
-                <p className="font-bold my-3 text-center text-blue-700">Loading Chart Data...</p>
+                <p className="font-bold my-3 text-center text-blue-700">
+                  Loading Chart Data...
+                </p>
               </>
-            )
-             : (
+            ) : (
               <div>
                 <Chart signIn={totalAttendanceCount} total={48} />
-                <p className="font-bold my-3 text-center text-blue-700">
-                  {totalAttendanceCount > 0 ? Math.round((totalAttendanceCount / 48) * 100) : 0 + "%"}
+                <p className="font-bold mt-2 text-center text-blue-700">
+                  Percentage: {(totalAttendanceCount > 0
+                    ? Math.round((totalAttendanceCount / 48) * 100)
+                    : 0) + "%"}
                 </p>
               </div>
-              )}
+            )}
           </div>
         </div>
 
         <div className="flex justify-center w-full">
-          <div className="flex justify-between mt-5 px-2 w-full">
+          <div className="flex justify-between mt-2 px-2 w-full">
             <div className="flex items-center text-sm gap-2 w-full">
               <div className="h-4 w-4 bg-[#33B35F]"></div>
               <p>Number of days Present</p>
@@ -235,7 +237,7 @@ function useClockIn({ courseId, onSuccess, onError }) {
       })
       .catch((error) => {
         toast.error("A server error occurred! Unable to clock in");
-        if (onError) onError()
+        if (onError) onError();
       })
       .finally(() => {
         setLoading(false);
@@ -275,7 +277,7 @@ function useClockOut({ courseId, onSuccess, onError }) {
       })
       .catch((error) => {
         toast.error("A server error occurred! Unable to clock out");
-        if (onError) onError()
+        if (onError) onError();
       })
       .finally(() => {
         setLoading(false);
