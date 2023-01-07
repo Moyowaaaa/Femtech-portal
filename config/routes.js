@@ -4,6 +4,8 @@ export const ADMIN_LOGIN_PAGE = '/admin/login/';
 
 export const ADMIN_REGISTER_PAGE = '/admin/register/';
 
+export const ADMIN_STUDENTS_PAGE = '/admin/students/';
+
 export const ATTENDANCE_PAGE = '/attendance/';
 
 export const ATTENDANCE_FAILED_PAGE = '/attendancefailed/';
