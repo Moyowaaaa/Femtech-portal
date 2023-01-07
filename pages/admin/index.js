@@ -288,6 +288,7 @@ function DateFilter({ filter, setFilter }) {
             { title: "Last 30 days", value: "30" },
             { title: "Last 90 days", value: "90" },
             { title: "Last 180 days", value: "180" },
+            { title: "Last 366 days", value: "366" },
             { title: "Custom Date", value: "custom" },
           ]}
           value={value}
