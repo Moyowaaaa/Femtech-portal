@@ -63,7 +63,7 @@ function Dashboard() {
     }));
     if (search && search.trim().length > 0) {
       currentData = currentData.filter((item) => {
-        const searchItem = item.fullname.toLowerCase();
+        const searchItem = item.fullname.toLowerCase() + " " + item.id.toLowerCase();
         return searchItem.includes(search.toLowerCase());
       });
     }
