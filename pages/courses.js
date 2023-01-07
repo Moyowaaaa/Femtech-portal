@@ -28,9 +28,9 @@ function Courses() {
 	const [open, setOpen] = React.useState(false);
 
 	const courses = React.useMemo(() => {
-		const courseNames = userCourses.map(item => item.course);
-		return allCourses.filter((item) => !courseNames.includes(item.name))
-	}, [allCourses, userCourses])
+		const courseNames = userCourses.map((item) => item.course);
+		return allCourses.filter((item) => !courseNames.includes(item.name));
+	}, [allCourses, userCourses]);
 
 	return (
 		<React.Fragment>
@@ -48,13 +48,13 @@ function Courses() {
 						</span>
 					</Button>
 				</div>
-				{userCoursesLoading ? (
-					<>Loading Courses ...</>
-				) : userCourses.length <= 0 ? (
-					<>
+				{userCoursesLoading ? 
+					<React.Fragment>Loading Courses ...</React.Fragment>
+				 : userCourses.length <= 0 ? (
+					<React.Fragment>
 						You have not registerd for any course. Click the button above to
 						register
-					</>
+					</React.Fragment>
 				) : (
 					userCourses
 						.sort((a, b) => {
@@ -64,27 +64,30 @@ function Courses() {
 							if (x > y) return 1;
 							return 0;
 						})
-						.map(({ id, course: name }, index) => (
-							<Link href={`/attendance/${id}/`} key={index}>
-								<a className="p-2 w-full">
-									<div
-										className="bg-white border border-gray-100 cursor-pointer duration-500 flex items-center p-3 rounded-lg shadow-l transition transform hover:scale-105 hover:bg-gray-100"
-										key={index}
-									>
-										<span
-											className={`${
-												name.length > 65 ? "w-[4rem]" : "w-[3rem]"
-											} bg-gray-200 flex items-center justify-center font-bold h-[3rem] min-w-[3rem] rounded-full mr-1 text-gray-600 text-xl uppercase`}
+						.map(({ id, course: name }, index) => {
+							let course = Array.isArray(allCourses) ? allCourses.find(item => item.name.toLowerCase() === name.toLowerCase()) : null;
+							return (
+								<Link href={`/attendance/${id}/?originalCourseId=${course?.id || ""}`} key={index}>
+									<a className="p-2 w-full">
+										<div
+											className="bg-white border border-gray-100 cursor-pointer duration-500 flex items-center p-3 rounded-lg shadow-l transition transform hover:scale-105 hover:bg-gray-100"
+											key={index}
 										>
-											{name[0].toUpperCase()}
-										</span>
-										<p className="capitalize font-semibold ml-1 text-gray-700 text-sm tracking-wider md:text-base">
-											{name}
-										</p>
-									</div>
-								</a>
-							</Link>
-						))
+											<span
+												className={`${
+													name.length > 65 ? "w-[4rem]" : "w-[3rem]"
+												} bg-gray-200 flex items-center justify-center font-bold h-[3rem] min-w-[3rem] rounded-full mr-1 text-gray-600 text-xl uppercase`}
+											>
+												{name[0].toUpperCase()}
+											</span>
+											<p className="capitalize font-semibold ml-1 text-gray-700 text-sm tracking-wider md:text-base">
+												{name}
+											</p>
+										</div>
+									</a>
+								</Link>
+							);
+						})
 				)}
 				<RegisterCourseForm
 					courses={courses}
