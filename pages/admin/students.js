@@ -71,8 +71,6 @@ function Dashboard() {
   }, [search, students]);
 
   const handleExport = React.useCallback(() => {
-    const excelHeaders = columns.map((column) => column.Header);
-
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(data);
 
@@ -83,7 +81,7 @@ function Dashboard() {
         currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_") +
         " .xlsx"
     );
-  }, [columns, data]);
+  }, [data]);
 
   return (
     <div className="min-h-full">
