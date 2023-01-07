@@ -61,12 +61,13 @@ function Table({ className, columns = [], data = [] }) {
 						className="divide-y divide-gray-200 min-w-full"
 					>
 						<thead className="bg-gray-700">
-							{headerGroups.map((headerGroup) => (
-								<tr {...headerGroup.getHeaderGroupProps()}>
-									{headerGroup.headers.map((column) => (
+							{headerGroups.map((headerGroup, index) => (
+								<tr key={index} {...headerGroup.getHeaderGroupProps()}>
+									{headerGroup.headers.map((column, index) => (
 										// Add the sorting props to control sorting. For this example
 										// we can add them into the header props
 										<th
+											key={index}
 											{...column.getHeaderProps(column.getSortByToggleProps())}
 											className="font-bold group px-6 py-4 text-gray-200 text-left text-sm tracking-wider uppercase"
 											scope="col"
@@ -100,10 +101,11 @@ function Table({ className, columns = [], data = [] }) {
 								// replace row with page
 								prepareRow(row);
 								return (
-									<tr {...row.getRowProps()}>
-										{row.cells.map((cell) => {
+									<tr key={i} {...row.getRowProps()}>
+										{row.cells.map((cell, index) => {
 											return (
 												<td
+													key={index}
 													{...cell.getCellProps()}
 													className="capitalize font-semibold px-6 py-4 text-gray-800 text-xs whitespace-nowrap md:text-sm"
 												>
