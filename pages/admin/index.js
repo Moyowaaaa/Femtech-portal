@@ -283,6 +283,7 @@ function DateFilter({ filter, setFilter }) {
           onChange={handleChange}
           options={[
             { title: "Today", value: "1" },
+            { title: "Yesterday", value: "2" },
             { title: "Last 7 days", value: "7" },
             { title: "Last 30 days", value: "30" },
             { title: "Last 90 days", value: "90" },
