@@ -38,12 +38,13 @@ ChartJS.register(
 );
 
 function Chart({ signIn, total }) {
+
   const data = {
     labels: ["Green", "Red"],
     datasets: [
       {
         label: "My First Dataset",
-        data: [300, 50],
+        data: [signIn, total - signIn],
         backgroundColor: ["#008000", "#ff0000"],
         hoverOffset: 4,
       },
