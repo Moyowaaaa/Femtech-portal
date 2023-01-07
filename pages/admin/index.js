@@ -1,4 +1,8 @@
-import { ArrowPathIcon, FolderArrowDownIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import {
+  ArrowPathIcon,
+  FolderArrowDownIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/20/solid";
 import {
   Menu,
   MenuHandler,
@@ -12,7 +16,6 @@ import * as XLSX from "xlsx";
 
 import Topbar from "../../components/admin/Topbar";
 import { Input, Select, Table } from "../../components/controls";
-import { AvatarIdCell } from "../../components/controls/table/cells"
 import { ADMIN_ATTENDANCE_URL } from "../../config";
 import { useOutClick } from "../../hooks";
 import { useAdminAuthContext } from "../../store/contexts";
@@ -26,7 +29,7 @@ const currentDate = new Date();
 
 const defaultFilterValue = {
   search: "",
-  from: currentDate.toLocaleDateString('en-Ca'),
+  from: currentDate.toLocaleDateString("en-Ca"),
   to: getNextDate(currentDate, 1, true),
 };
 
@@ -36,32 +39,21 @@ function Dashboard() {
   const { attendance = [], loading, refetch } = useGetAttendance();
 
   const getAttendance = React.useCallback(() => {
-    refetch({ from: filter.from.replaceAll('-', '/'), to: filter.to.replaceAll('-', '/') })
-  }, [filter.from, filter.date, refetch])
+    refetch({
+      from_d: filter.from.replaceAll("-", "/"),
+      to_d: filter.to.replaceAll("-", "/"),
+    });
+  }, [filter.from, filter.date, refetch]);
 
   React.useEffect(() => {
-    getAttendance()
-  }, [getAttendance])
-
-  const handleChange = React.useCallback(({ target: { name, value } }) => {
-    setFilter((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }, []);
+    getAttendance();
+  }, [getAttendance]);
 
   const columns = React.useMemo(
     () => [
       {
         Header: "Student",
         accessor: "fullname",
-        idAccessor: "id",
-        imageAccessor: "image",
-        Cell: AvatarIdCell,
-      },
-      {
-        Header: "Course",
-        accessor: "course",
       },
       {
         Header: "Date",
@@ -86,35 +78,37 @@ function Dashboard() {
   );
 
   const data = React.useMemo(() => {
-    let currentData = globalData;
-    if (filter.from && filter.to) {
-      let from = new Date(filter.from).getTime()
-      let to = new Date(filter.to).getTime()
-
-      currentData = currentData.filter(item => {
-        const date = new Date(item.date).getTime();
-        if (date >= from && date <= to) return item
-      })
-    }
+    let currentData = [];
+    currentData = attendance.map((item) => ({
+      fullname: item.firstname + " " + item.surname,
+      date: new Date(item.created_at).toLocaleDateString("en-Ca"),
+      clockIn: item.signIn_time,
+      clockOut: item.signOut_time,
+    }));
     if (filter.search && filter.search.trim().length > 0) {
-      currentData = currentData.filter(item => {
+      currentData = currentData.filter((item) => {
         const search = filter.search.toLowerCase();
-        const searchItem = item.fullname.toLowerCase() + " " + item.course.toLowerCase() + " " + item.id.toLowerCase()
-        return searchItem.includes(search)
-      })
+        const searchItem = item.fullname.toLowerCase();
+        return searchItem.includes(search);
+      });
     }
-    return currentData
-  }, [filter])
+    return currentData.reverse();
+  }, [attendance, filter.search]);
 
   const handleExport = React.useCallback(() => {
-    const excelHeaders = columns.map(column => column.Header);
+    const excelHeaders = columns.map((column) => column.Header);
 
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data)
+    const ws = XLSX.utils.json_to_sheet(data);
 
     XLSX.utils.book_append_sheet(wb, ws, "Attendance Sheet 1");
-    XLSX.writeFile(wb, "Attendance.xlsx")
-  }, [columns, data])
+    XLSX.writeFile(
+      wb,
+      "Attendance" +
+        currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_") +
+        ".xlsx"
+    );
+  }, [columns, data]);
 
   return (
     <div className="min-h-full">
@@ -131,16 +125,26 @@ function Dashboard() {
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <div className="flex justify-end items-center my-4 py-2 md:py-3 lg:pt-4">
             <div className="mr-6 w-[12rem]">
-              <Button onClick={getAttendance} className="flex items-center justify-center" color="green" fullWidth>
+              <Button
+                onClick={getAttendance}
+                className="flex items-center justify-center"
+                color="green"
+                fullWidth
+              >
                 <ArrowPathIcon className="h-5 mr-2 text-gray-100 w-5" />
                 <span className="capitalize text-gray-100">Refetch</span>
-              </Button> 
+              </Button>
             </div>
             <div className="w-[12rem]">
-              <Button onClick={handleExport} className="flex items-center justify-center" color="blue" fullWidth>
+              <Button
+                onClick={handleExport}
+                className="flex items-center justify-center"
+                color="blue"
+                fullWidth
+              >
                 <FolderArrowDownIcon className="h-5 mr-2 text-gray-100 w-5" />
                 <span className="capitalize text-gray-100">Export</span>
-              </Button> 
+              </Button>
             </div>
           </div>
 
@@ -150,10 +154,10 @@ function Dashboard() {
                 value={filter.search}
                 icon={<MagnifyingGlassIcon />}
                 onChange={(e) => {
-                  setFilter(prevState => ({
+                  setFilter((prevState) => ({
                     ...prevState,
-                    search: e.target.value
-                  }))
+                    search: e.target.value,
+                  }));
                 }}
                 label="Search..."
               />
@@ -166,7 +170,7 @@ function Dashboard() {
           {/*{loading && (!data || !Array.isArray(data) || data.length <= 0) ? (*/}
           {loading ? (
             <>
-             <div className="flex items-center justify-center my-6 py-6">
+              <div className="flex items-center justify-center my-6 py-6">
                 <div className="w-24 h-24 border-l-2 border-r-2 border-blue-900 rounded-full animate-spin"></div>
               </div>
               <p className="font-bold my-3 text-center text-blue-700">
@@ -188,38 +192,36 @@ function useGetAttendance() {
 
   const { data } = useAdminAuthContext();
 
-  const getAttendance = React.useCallback((query) => {
-    setLoading(true);
-    fetch(ADMIN_ATTENDANCE_URL, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + data?.token,
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(query)
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data?.status_code === 201) {
-          if (Array.isArray(data.message) && data.message.length > 0)
-            setAttendance(data.message);
-        } else {
-          toast.error("An error occurred!");
-        }
+  const getAttendance = React.useCallback(
+    (query) => {
+      setLoading(true);
+      fetch(ADMIN_ATTENDANCE_URL, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + data?.token,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(query),
       })
-      .catch((error) => {
-        toast.error("A server error occurred!");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [data]);
-
-  // React.useEffect(() => {
-  //   getAttendance(query);
-  // }, [getAttendance, query]);
+        .then((response) => response.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setAttendance(data);
+          } else {
+            toast.error("An error occurred!");
+          }
+        })
+        .catch((error) => {
+          toast.error("A server error occurred!");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [data]
+  );
 
   return {
     attendance,
@@ -228,101 +230,19 @@ function useGetAttendance() {
   };
 }
 
-Dashboard.authRequired = false;
+Dashboard.authRequired = true;
 Dashboard.adminAuth = true;
 
 export default Dashboard;
-
-const globalData = [
-  {
-    id: "fiti/22/001",
-    image: null,
-    fullname: "John Doe",
-    course: "Web Design and Development",
-    date: "2023-01-07",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-  {
-    id: "fiti/22/002",
-    image: null,
-    fullname: "Anna Dey Johnson",
-    course: "Web Design and Development",
-    date: "2023-01-07",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-  {
-    id: "fiti/22/003",
-    image: null,
-    fullname: "Jeremiah Ismael",
-    course: "Web Design and Development",
-    date: "2023-01-06",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-  {
-    id: "fiti/22/004",
-    image: null,
-    fullname: "Genevieve Something",
-    course: "Web Design and Development",
-    date: "2022-12-10",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-  {
-    id: "fiti/22/005",
-    image: null,
-    fullname: "Paul Flyer",
-    course: "Web Design and Development",
-    date: "2022-12-14",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-  {
-    id: "fiti/22/006",
-    image: null,
-    fullname: "Peace Flyer",
-    course: "Web Design and Development",
-    date: "2022-12-18",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-  {
-    id: "fiti/22/007",
-    image: null,
-    fullname: "James Anderson",
-    course: "Web Design and Development",
-    date: "2022-12-20",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-  {
-    id: "fiti/22/008",
-    image: null,
-    fullname: "Johnson Grace",
-    course: "Web Design and Development",
-    date: "2022-12-22",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-  {
-    id: "fiti/22/009",
-    image: null,
-    fullname: "Perseus Jackson",
-    course: "Web Design and Development",
-    date: "2022-12-26",
-    clockIn: "8:03:00 AM",
-    clockOut: "8:03:00 AM",
-  },
-]
 
 function DateFilter({ filter, setFilter }) {
   const { buttonRef, ref, visible, setVisible } = useOutClick();
   const [value, setValue] = React.useState("1");
 
-  const [from, setFrom] = React.useState(filter.from || defaultFilterValue.from);
-  const [to, setTo] = React.useState(filter.to || defaultFilterValue.to)
+  const [from, setFrom] = React.useState(
+    filter.from || defaultFilterValue.from
+  );
+  const [to, setTo] = React.useState(filter.to || defaultFilterValue.to);
 
   const handleChange = React.useCallback(
     (option) => {
@@ -333,9 +253,10 @@ function DateFilter({ filter, setFilter }) {
         setFilter((prevState) => ({
           ...prevState,
           from: defaultFilterValue.from,
-          to: defaultFilterValue.to
+          to: defaultFilterValue.to,
         }));
-        setFrom(defaultFilterValue.from); setTo(defaultFilterValue.to);
+        setFrom(defaultFilterValue.from);
+        setTo(defaultFilterValue.to);
       } else {
         if (visible) setVisible(false);
         const to = getNextDate(new Date(), 1, false);
@@ -343,11 +264,12 @@ function DateFilter({ filter, setFilter }) {
 
         setFilter((prevState) => ({
           ...prevState,
-          from, 
-          to: to.toLocaleDateString('en-Ca'),
+          from,
+          to: to.toLocaleDateString("en-Ca"),
         }));
 
-        setFrom(from); setTo(to.toLocaleDateString('en-Ca'))
+        setFrom(from);
+        setTo(to.toLocaleDateString("en-Ca"));
       }
     },
     [setFilter, visible, setVisible]
@@ -364,7 +286,7 @@ function DateFilter({ filter, setFilter }) {
             { title: "Last 7 days", value: "7" },
             { title: "Last 30 days", value: "30" },
             { title: "Last 90 days", value: "90" },
-            { title: "Last 180 days", value: "180"},
+            { title: "Last 180 days", value: "180" },
             { title: "Custom Date", value: "custom" },
           ]}
           value={value}
@@ -380,7 +302,7 @@ function DateFilter({ filter, setFilter }) {
               label="Date From"
               type="date"
               onChange={({ target: { value } }) => {
-                setFrom(value)
+                setFrom(value);
                 setFilter((prevState) => ({
                   ...prevState,
                   from: value,
@@ -394,10 +316,10 @@ function DateFilter({ filter, setFilter }) {
               label="Date To"
               type="date"
               onChange={({ target: { value } }) => {
-                setTo(value)
+                setTo(value);
                 setFilter((prevState) => ({
                   ...prevState,
-                  to: value
+                  to: value,
                 }));
               }}
               value={to || ""}
@@ -427,4 +349,3 @@ function DateFilter({ filter, setFilter }) {
 //     </div>
 //   );
 // }
-
