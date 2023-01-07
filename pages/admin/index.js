@@ -106,7 +106,7 @@ function Dashboard() {
       wb,
       "Attendance " +
         currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_") +
-        ".xlsx"
+        " .xlsx"
     );
   }, [columns, data]);
 

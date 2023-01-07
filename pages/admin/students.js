@@ -81,7 +81,7 @@ function Dashboard() {
       wb,
       "Students " +
         currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_") +
-        ".xlsx"
+        " .xlsx"
     );
   }, [columns, data]);
 
