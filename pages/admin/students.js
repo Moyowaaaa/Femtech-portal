@@ -79,7 +79,7 @@ function Dashboard() {
     XLSX.utils.book_append_sheet(wb, ws, "Students Sheet 1");
     XLSX.writeFile(
       wb,
-      "Students" +
+      "Students " +
         currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_") +
         ".xlsx"
     );
