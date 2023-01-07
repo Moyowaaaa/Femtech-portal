@@ -1,15 +1,14 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
+import {
+	ADMIN_DASHBOARD_PAGE,
+	ADMIN_STUDENTS_PAGE
+} from '../../config'
 import { useAdminAuthContext } from '../../store/contexts'
-
-const navigation = [
-	{ name: "Attendance", href: "#", current: true },
-	{ name: "Students", href: "#", current: false },
-	{ name: "Events", href: "#", current: false },
-];
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(" ");
@@ -21,7 +20,15 @@ function Topbar() {
 		email: "fiti/admin/22/001",
 	};
 
+	const { pathname } = useRouter()
+
 	const { logout } = useAdminAuthContext();
+
+
+	const navigation = [
+		{ name: "Attendance", href: ADMIN_DASHBOARD_PAGE, current: pathname === ADMIN_DASHBOARD_PAGE },
+		{ name: "Students", href: ADMIN_STUDENTS_PAGE, current: pathname === ADMIN_STUDENTS_PAGE },
+	];
 
 	return (
 		<Disclosure as="nav" className="bg-gray-800">
