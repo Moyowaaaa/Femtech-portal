@@ -37,9 +37,9 @@ ChartJS.register(
   PointElement
 );
 
-function Chart() {
+function Chart({ signIn, total }) {
   const data = {
-    labels: ["Red", "Green"],
+    labels: ["Green", "Red"],
     datasets: [
       {
         label: "My First Dataset",
@@ -80,6 +80,19 @@ const Attendance = ({ courseId }) => {
     courseId
   });
 
+  const totalAttendanceCount = React.useMemo(() => {
+    if (attendData && Array.isArray(attendData) && attendData.length > 0) {
+      const count = attendData.reduce((totalCount, currentAttendance) => {
+        if (currentAttendance.signIn_time && currentAttendance.signOut_time) {
+          return totalCount + 1;
+        }
+        return totalCount
+      }, 0)
+      return count
+    }
+    return 0
+  }, [attendData])
+
   const { refetch, loading, attendance } = useGetAttendance({
     courseId
   });
@@ -116,7 +129,7 @@ const Attendance = ({ courseId }) => {
         </h1>
         <div className="flex justify-center mt-5">
           <div className="h-full w-[250px]">
-            <Chart />
+            <Chart signIn={totalAttendanceCount} total={48} />
           </div>
         </div>
 
