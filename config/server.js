@@ -6,6 +6,8 @@ export const ADMIN_REGISTER_URL = BASE_URL + '/admin/register';
 
 export const ADMIN_LOGIN_URL = BASE_URL + '/admin/login';
 
+export const ADMIN_STUDENTS_URL = BASE_URL + '/admin/get_users';
+
 export const CLOCK_IN_URL = BASE_URL + '/user/clock_in';
 
 export const CLOCK_OUT_URL = BASE_URL + '/user/clock_out';
