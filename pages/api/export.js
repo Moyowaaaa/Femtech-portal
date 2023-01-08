@@ -1,28 +1,18 @@
 import excelJS from "exceljs";
 
-function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({
-      status: "error",
-      message: `Method ${req.method} not allowed`,
-    });
+    return res.status(405).send(`Method ${req.method} not allowed`);
   }
 
   const { data, headers, title, fileName } = req.body;
 
-  if (!data || !headers || !title || fileName) {
-    return res.status(400).json({
-      status: "error",
-      message: "data, headers, title and fileName are all required!",
-    });
+  if (!data || !headers || !title || !fileName) {
+    return res.status(400).send("data, headers, title and fileName are all required!");
   }
 
   if (!Array.isArray(data) || !Array.isArray(headers)) {
-    return res.status(400).json({
-      status: "error",
-      message:
-        "data and headers must be an array. headers must have a header field key to serve as a title and a key field key to access the data item",
-    });
+    return res.status(400).send("data and headers must be an array. headers must have a header field key to serve as a title and a key field key to access the data item");
   }
 
   const workbook = new excelJS.Workbook(); // Create a new workbook
@@ -45,6 +35,7 @@ function handler(req, res) {
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   );
+
   res.setHeader(
     "Content-Disposition",
     `attachment; filename="${
