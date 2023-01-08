@@ -12,11 +12,10 @@ import {
 } from "@material-tailwind/react";
 import React from "react";
 import { toast } from "react-toastify";
-import * as XLSX from "xlsx";
 
 import Topbar from "../../components/admin/Topbar";
 import { Input, Select, Table } from "../../components/controls";
-import { ADMIN_ATTENDANCE_URL } from "../../config";
+import { ADMIN_ATTENDANCE_URL, EXPORT_URL } from "../../config";
 import { useOutClick } from "../../hooks";
 import { useAdminAuthContext } from "../../store/contexts";
 import { getNextDate } from "../../utils";
@@ -35,6 +34,8 @@ const defaultFilterValue = {
 
 function Dashboard() {
   const [filter, setFilter] = React.useState(defaultFilterValue);
+
+  const { loading: exportLoading, exportData } = useExportData()
 
   const { attendance = [], loading, refetch } = useGetAttendance();
 
@@ -68,11 +69,6 @@ function Dashboard() {
         Header: "Clocked Out",
         accessor: "clockOut",
       },
-      // {
-      //   Header: "Actions",
-      //   accessor: "id",
-      //   Cell: (props) => <ActionCell {...props} onSelect={onSelect} />,
-      // },
     ],
     []
   );
@@ -96,17 +92,18 @@ function Dashboard() {
   }, [attendance, filter.search]);
 
   const handleExport = React.useCallback(() => {
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data);
-
-    XLSX.utils.book_append_sheet(wb, ws, "Attendance Sheet 1");
-    XLSX.writeFile(
-      wb,
-      "Attendance " +
-        currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_") +
-        " .xlsx"
-    );
-  }, [data]);
+    const info = {
+      fileName: "Attendance " +
+        currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_"),
+      data,
+      title: "Attendance",
+      headers: columns.map(column => ({
+        header: column.Header,
+        key: column.accessor
+      }))
+    }
+    exportData(info)    
+  }, [columns, data, exportData]);
 
   return (
     <div className="min-h-full">
@@ -136,12 +133,13 @@ function Dashboard() {
             <div className="w-[12rem]">
               <Button
                 onClick={handleExport}
+                disabled={exportLoading}
                 className="flex items-center justify-center"
                 color="blue"
                 fullWidth
               >
                 <FolderArrowDownIcon className="h-5 mr-2 text-gray-100 w-5" />
-                <span className="capitalize text-gray-100">Export</span>
+                <span className="capitalize text-gray-100">{exportLoading ? "Exporting..." : "Export"}</span>
               </Button>
             </div>
           </div>
@@ -226,6 +224,47 @@ function useGetAttendance() {
     loading,
     refetch: getAttendance,
   };
+}
+
+function useExportData() {
+  const [loading, setLoading] = React.useState(false);
+
+  async function exportData(info) {
+    setLoading(true)
+    
+    fetch(EXPORT_URL, {
+      method: 'POST',
+      headers: {
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(info)
+    })
+    .then(res => {
+      if (res.ok) return res.blob()
+      else throw res.json()
+    })
+    .then(data => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', info.fileName + ".xlsx");
+      document.body.appendChild(link);
+      link.click();
+    })
+    .catch(err => {
+      toast.error(err?.message || 'An error occurred. Can not export data')
+    })
+    .finally(() => {
+      setLoading(false)
+    })
+  }
+
+  return {
+    loading,
+    exportData
+  }
 }
 
 Dashboard.authRequired = true;
@@ -330,22 +369,3 @@ function DateFilter({ filter, setFilter }) {
     </div>
   );
 }
-
-// function ActionCell({ onSelect, value }) {
-//   return (
-//     <div className="flex items-center justify-around">
-//       <Menu placement="bottom-end">
-//         <MenuHandler>
-//           <span className="cursor-pointer inline-block p-2 rounded-full hover:bg-gray-300">
-//             <Bars3Icon className="h-4 text-blue-600 w-4" />
-//           </span>
-//         </MenuHandler>
-//         <MenuList>
-//           <MenuItem onClick={() => onSelect(value)}>View</MenuItem>
-//           <MenuItem>Re-query</MenuItem>
-//           <MenuItem>Mark As Failed</MenuItem>
-//         </MenuList>
-//       </Menu>
-//     </div>
-//   );
-// }
