@@ -12,7 +12,6 @@ import {
 } from "@material-tailwind/react";
 import React from "react";
 import { toast } from "react-toastify";
-import * as XLSX from "xlsx";
 
 import Topbar from "../../components/admin/Topbar";
 import { Input, Table } from "../../components/controls";
