@@ -16,7 +16,7 @@ import * as XLSX from "xlsx";
 
 import Topbar from "../../components/admin/Topbar";
 import { Input, Table } from "../../components/controls";
-import { ADMIN_STUDENTS_URL } from "../../config";
+import { ADMIN_STUDENTS_URL, EXPORT_URL } from "../../config";
 import { useAdminAuthContext } from "../../store/contexts";
 
 const tdClassName =
@@ -29,6 +29,8 @@ function Dashboard() {
   const [search, setSearch] = React.useState("");
 
   const { students = [], loading, refetch } = useGetStudents();
+
+  const { loading: exportLoading, exportData } = useExportData()
 
   const columns = React.useMemo(
     () => [
@@ -71,17 +73,18 @@ function Dashboard() {
   }, [search, students]);
 
   const handleExport = React.useCallback(() => {
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data);
-
-    XLSX.utils.book_append_sheet(wb, ws, "Students Sheet 1");
-    XLSX.writeFile(
-      wb,
-      "Students " +
-        currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_") +
-        " .xlsx"
-    );
-  }, [data]);
+    const info = {
+      fileName: "Students " +
+        currentDate.toLocaleDateString("en-Ca").replaceAll("-", "_"),
+      data,
+      title: "Students",
+      headers: columns.map(column => ({
+        header: column.Header,
+        key: column.accessor
+      }))
+    }
+    exportData(info)    
+  }, [columns, data, exportData]);
 
   return (
     <div className="min-h-full">
@@ -111,12 +114,13 @@ function Dashboard() {
             <div className="w-[12rem]">
               <Button
                 onClick={handleExport}
+                disabled={exportLoading}
                 className="flex items-center justify-center"
                 color="blue"
                 fullWidth
               >
                 <FolderArrowDownIcon className="h-5 mr-2 text-gray-100 w-5" />
-                <span className="capitalize text-gray-100">Export</span>
+                <span className="capitalize text-gray-100">{exportLoading ? "Exporting..." : "Export"}</span>
               </Button>
             </div>
           </div>
@@ -196,26 +200,48 @@ function useGetStudents() {
   };
 }
 
+function useExportData() {
+  const [loading, setLoading] = React.useState(false);
+
+  async function exportData(info) {
+    setLoading(true)
+    
+    fetch(EXPORT_URL, {
+      method: 'POST',
+      headers: {
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(info)
+    })
+    .then(res => {
+      if (res.ok) return res.blob()
+      else throw res.json()
+    })
+    .then(data => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', info.fileName + ".xlsx");
+      document.body.appendChild(link);
+      link.click();
+    })
+    .catch(err => {
+      toast.error(err?.message || 'An error occurred. Can not export data')
+    })
+    .finally(() => {
+      setLoading(false)
+    })
+  }
+
+  return {
+    loading,
+    exportData
+  }
+}
+
 Dashboard.authRequired = true;
 Dashboard.adminAuth = true;
 
 export default Dashboard;
-
-// function ActionCell({ onSelect, value }) {
-//   return (
-//     <div className="flex items-center justify-around">
-//       <Menu placement="bottom-end">
-//         <MenuHandler>
-//           <span className="cursor-pointer inline-block p-2 rounded-full hover:bg-gray-300">
-//             <Bars3Icon className="h-4 text-blue-600 w-4" />
-//           </span>
-//         </MenuHandler>
-//         <MenuList>
-//           <MenuItem onClick={() => onSelect(value)}>View</MenuItem>
-//           <MenuItem>Re-query</MenuItem>
-//           <MenuItem>Mark As Failed</MenuItem>
-//         </MenuList>
-//       </Menu>
-//     </div>
-//   );
-// }
